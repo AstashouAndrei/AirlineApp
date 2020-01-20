@@ -38,7 +38,8 @@ public class MySqlUserDAO implements UserDAO {
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
-            statement.setInt(3, user.getAccess().getAccessID());
+            statement.setString(3, user.getEmail());
+            statement.setInt(4, user.getAccess().getAccessID());
             statement.executeUpdate();
             logger.trace("Create result set");
             resultSet = statement.getGeneratedKeys();
@@ -200,9 +201,10 @@ public class MySqlUserDAO implements UserDAO {
         try {
             String login = resultSet.getString("Login");
             String password = resultSet.getString("Password");
+            String email = resultSet.getString("Email");
             int accessID = resultSet.getInt("AccessID");
             Access access = Access.getAccessByID(accessID);
-            user = new User(login, password, access);
+            user = new User(login, password, email, access);
         } catch (SQLException e) {
             logger.error("Cannot initialize user", e);
             throw new DAOException("Cannot initialize user", e);

@@ -8,7 +8,8 @@ import by.gstu.airline.exception.AccessException;
 public enum Access {
 
     ADMINISTRATOR("Administrator", 1),
-    DISPATCHER("Dispatcher", 2);
+    DISPATCHER("Dispatcher", 2),
+    STAFF("Staff", 3);
 
     private String access;
     private int accessID;
@@ -30,6 +31,8 @@ public enum Access {
                 return ADMINISTRATOR;
             case 2:
                 return DISPATCHER;
+            case 3:
+                return STAFF;
             default:
                 throw new AccessException("Incorrect profession ID: " + id);
         }

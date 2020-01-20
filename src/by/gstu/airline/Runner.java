@@ -18,18 +18,24 @@ public class Runner {
 
         FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
 
-        StaffDAO staffDAO = factoryDAO.getStaffDAO();
-        ItineraryDAO itineraryDAO = factoryDAO.getItineraryDAO();
-        PlaneDAO planeDAO = factoryDAO.getPlaneDAO();
-        CrewDAO crewDAO = factoryDAO.getCrewTeamDAO();
-        FlightDAO flightDAO = factoryDAO.getFlightDAO();
+//        StaffDAO staffDAO = factoryDAO.getStaffDAO();
+//        ItineraryDAO itineraryDAO = factoryDAO.getItineraryDAO();
+//        PlaneDAO planeDAO = factoryDAO.getPlaneDAO();
+//        CrewDAO crewDAO = factoryDAO.getCrewTeamDAO();
+//        FlightDAO flightDAO = factoryDAO.getFlightDAO();
         UserDAO userDAO = factoryDAO.getUserDAO();
 
-        Staff s = staffDAO.getStaffByID(12);
-        Flight flight = flightDAO.getIFlightByID(2);
-        JSONObject jsonStaff = new JSONObject(flight);
+        userDAO.addUser(new User("Boqeb", "b2qe1ae1", "bowq@eqeeqwe.ru", Access.DISPATCHER));
 
-        System.out.println(jsonStaff);
+//        System.out.println(userDAO.getUserById(1));
+//        System.out.println(userDAO.getUserByLogin("Boqeb"));
+//        System.out.println(userDAO.getUserById(12));
+
+//        Staff s = staffDAO.getStaffByID(12);
+//        Flight flight = flightDAO.getIFlightByID(2);
+//        JSONObject jsonStaff = new JSONObject(flight);
+//
+//        System.out.println(jsonStaff);
 //        var firstName = document.createTextNode(jsonStaff.plane.);
 //
         // Get users from data base by id

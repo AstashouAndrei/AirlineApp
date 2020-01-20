@@ -1,1 +1,48 @@
 
+2020-01-20 19:30:38 ERROR MySqlUserDAO:50 - Cannot add user to data base
+java.sql.SQLException: Parameter index out of range (4 > number of parameters, which is 3).
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.checkBounds(ClientPreparedStatement.java:1372)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.getCoreParameterIndex(ClientPreparedStatement.java:1385)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.setInt(ClientPreparedStatement.java:1573)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.addUser(MySqlUserDAO.java:42)
+	at by.gstu.airline.Runner.main(Runner.java:28)
+2020-01-20 19:36:05 ERROR MySqlUserDAO:209 - Cannot initialize user
+java.sql.SQLException: Illegal operation on empty result set.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.checkRowPos(ResultSetImpl.java:484)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getString(ResultSetImpl.java:834)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getString(ResultSetImpl.java:852)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.initializeUser(MySqlUserDAO.java:202)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.getUserByLogin(MySqlUserDAO.java:116)
+	at by.gstu.airline.Runner.main(Runner.java:32)
+2020-01-20 19:36:35 ERROR MySqlUserDAO:209 - Cannot initialize user
+java.sql.SQLException: Illegal operation on empty result set.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.checkRowPos(ResultSetImpl.java:484)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getString(ResultSetImpl.java:834)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getString(ResultSetImpl.java:852)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.initializeUser(MySqlUserDAO.java:202)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.getUserById(MySqlUserDAO.java:80)
+	at by.gstu.airline.Runner.main(Runner.java:32)
+2020-01-20 19:52:27 ERROR MySqlUserDAO:50 - Cannot add user to data base
+java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'Boqeb' for key 'Login_UNIQUE'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1347)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at by.gstu.airline.dao.mysql.MySqlUserDAO.addUser(MySqlUserDAO.java:43)
+	at by.gstu.airline.Runner.main(Runner.java:28)
