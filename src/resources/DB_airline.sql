@@ -12,7 +12,8 @@ CREATE TABLE `access` (
 	INSERT airline.access(id, Access) 
 VALUES
 (1, 'Administrator'),
-(2, 'Dispatcher');
+(2, 'Dispatcher'),
+(3, 'Staff');
 
 
 
@@ -21,6 +22,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Login` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `Password` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `Email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `AccessID` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
