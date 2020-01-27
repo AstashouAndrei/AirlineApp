@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="resources/css/admin.css?version=1">
+   <title>Administrator</title>
+</head>
+
+<body ">
+<div class=" wrapper">
+   <div class="header">
+      <div class="logo">
+         <span id="first-word">Red</span>
+         <span id="second-word">W!ngs</span>
+         <img src="resources/css/img/logo.png">
+      </div>
+   </div>
+   <div class="fight-info-wrapper">
+      <div class="info-panel" id="inf-panel">
+         <input type="text" class="flight-id-input" id="flightID" placeholder="Flight ID">
+         <input type="submit" class="btn" id="showByID" value="Show flight by ID">
+         <input type="submit" class="btn" id="showAll" value="Show all flights">
+         <input type="submit" class="btn" id="showOperate" value="Manageble flights">
+         <input type="submit" class="btn" id="showRemovable" value="Removeble flights">
+         <input type="submit" class="btn remove" id="removeFlight" value="Remove flight">
+      </div>
+      <div class="manage-panel" id="mng-panel">
+         <input type="submit" class="btn start" id="startFlight" value="Start flight">
+         <input type="submit" class="btn finish" id="finishFlight" value="Finish flight">
+         <input type="submit" class="btn delay" id="delayFlight" value="Delay flight">
+         <input type="submit" class="btn cancel" id="cancelFlight" value="Cancel flight">
+      </div>
+   </div>
+   <div class="flighttable">
+      <table class="table" id="flight-table">
+         <tr>
+            <th>ID</th>
+            <th>Flight code</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Plane type</th>
+            <th>Passengers</th>
+            <th>Flight range</th>
+            <th>Fuel consumption</th>
+            <th>Current state</th>
+         </tr>
+      </table>
+   </div>
+   <div class="fight-edit-wrapper">
+      <div class="flight-add" id="flight-add">
+         <div class="itinerary">
+            <div class="form-group">
+               <label>Flight code</label>
+               <input type="text" class="form-control inputbox" id="f-code" placeholder="Flight code">
+               <small>Invalid or blank flight code</small>
+            </div>
+            <div class="form-group">
+               <label>Departure</label>
+               <input type="text" class="form-control inputbox" id="dep" placeholder="Departure">
+               <small>Invalid or blank departure</small>
+            </div>
+            <div class="form-group">
+               <label>Arrival</label>
+               <input type="text" class="form-control inputbox" id="arr" placeholder="Arrival">
+               <small>Invalid or blank arrival</small>
+            </div>
+         </div>
+
+         <div class="plane">
+
+            <div class="form-group">
+               <label>Plane type</label>
+               <input type="text" class="form-control inputbox" id="pl-type" placeholder="Plane type" maxlength="15">
+               <small>Invalid or blank type of the plane</small>
+            </div>
+            <div class="form-group">
+               <label>Passenger capacity</label>
+               <input type="text" class="form-control inputbox" id="pas-cap" placeholder="Passenger capacity">
+               <small>Invalid or blank plane passenger capacity</small>
+            </div>
+            <div class="form-group">
+               <label>Flight range</label>
+               <input type="text" class="form-control inputbox" id="fl-range" placeholder="Flight range">
+               <small>Invalid or blank plane flight range</small>
+            </div>
+            <div class="form-group">
+               <label>Fuel consumption</label>
+               <input type="text" class="form-control inputbox" id="f-cons" placeholder="Fuel consumption">
+               <small>Invalid or blank fuel consumption</small>
+            </div>
+         </div>
+
+         <div class="addbtn">
+            <input type="submit" class="btn addFlight" id="addFlight" value="Add flight">
+            <input type="submit" class="btn addFlight" id="addFlightCancel" value="Clear">
+         </div>
+      </div>
+   </div>
+   <div class="fl-wrapper">
+      <div class="flight-info" id="flight-info-div">
+
+      </div>
+   </div>
+   <script src="resources/js/admin.js"></script>
+   </body>
+
+</html>

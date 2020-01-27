@@ -8,6 +8,7 @@ public class Flight {
     private int id;
     private Itinerary itinerary;
     private Plane plane;
+    private CurrentState state;
 
 
     public Flight(Itinerary itinerary, Plane plane) {
@@ -37,6 +38,14 @@ public class Flight {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
+    }
+
+    public CurrentState getState() {
+        return state;
+    }
+
+    public void setState(CurrentState state) {
+        this.state = state;
     }
 
     @Override

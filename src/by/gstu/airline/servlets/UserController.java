@@ -47,7 +47,6 @@ public class UserController extends HttpServlet {
         } else {
             message = userLogin(jsonObject);
         }
-
         JSONObject responseData = new JSONObject();
         responseData.put("message", message);
         responseData.put("login", login);
@@ -74,7 +73,7 @@ public class UserController extends HttpServlet {
         try {
             User user = userDAO.getUserByLogin(login);
             if (user.getPassword().equals(password)) {
-                message = "logsuccess";
+                message = user.getAccess().getAccess();
             } else {
                 message = "wrongpassword";
             }

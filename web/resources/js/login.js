@@ -52,7 +52,7 @@ regButton.addEventListener('click', function () {
     let regUserConfPassValue = regUserConfPass.value.trim();
     let reqUserAccessValue;
     if (validateReg(regUserNameValue, regUserEmailValue, regUserPassValue, regUserConfPassValue)) {
-        for(let i = 0; i < userAccessLevels.length; i++) {
+        for (let i = 0; i < userAccessLevels.length; i++) {
             if (userAccessLevels[i].checked) {
                 reqUserAccessValue = userAccessLevels[i].value;
                 break;
@@ -151,22 +151,29 @@ function callServlet(data) {
     request.setRequestHeader("Content-Type", "application/json");
     request.responseType = 'json';
     request.send(JSON.stringify(data));
+
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
-            var respData = request.response;
+            let respData = request.response;
             let message = respData.message;
             let login = respData.login;
-            showResult(message, login);
+            switch (message) {
+                case 'Administrator':
+                    window.location.replace("admin.html");
+                    break;
+                case 'Dispatcher':
+                    window.location.replace("dispatcher.html")
+                    break;
+                default:
+                    showResult(message, login);
+                    break;
+            }
         }
     };
 }
 
 function showResult(message, login) {
     switch (message) {
-        case 'logsuccess':
-            container.style.display = 'none';
-            welcomeContainer.innerHTML = "Welcome " + login + ". You are successfully singed in airline account.";
-            break;
         case 'wrongpassword':
             welcomeContainer.innerHTML = "Wrong password for user " + login + ". Please try again or sign up.";
             break;

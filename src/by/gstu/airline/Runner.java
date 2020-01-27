@@ -16,16 +16,35 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
 
+
+//
         FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
-
-//        StaffDAO staffDAO = factoryDAO.getStaffDAO();
-//        ItineraryDAO itineraryDAO = factoryDAO.getItineraryDAO();
+        FlightDAO flightDAO = factoryDAO.getFlightDAO();
+        for (Flight flight : flightDAO.getFlightsByState(CurrentState.ON_FLIGHT)) {
+            System.out.println(flight);
+        }
+//        System.out.println(flightDAO.getIFlightByID(9));
+//        System.out.println(flightDAO.getIFlightByCode("SU0234"));
 //        PlaneDAO planeDAO = factoryDAO.getPlaneDAO();
-//        CrewDAO crewDAO = factoryDAO.getCrewTeamDAO();
-//        FlightDAO flightDAO = factoryDAO.getFlightDAO();
-        UserDAO userDAO = factoryDAO.getUserDAO();
-
-        userDAO.addUser(new User("Boqeb", "b2qe1ae1", "bowq@eqeeqwe.ru", Access.DISPATCHER));
+//        ItineraryDAO itineraryDAO = factoryDAO.getItineraryDAO();
+//
+//
+//        flightDAO.removeFlightByID(34);
+//        planeDAO.removePlaneByID(19);
+//        itineraryDAO.removeItineraryByID(29);
+//
+////        StaffDAO staffDAO = factoryDAO.getStaffDAO();
+////
+////
+////        CrewDAO crewDAO = factoryDAO.getCrewTeamDAO();
+//
+//
+//        for (Flight flight : flightDAO.getFlightsList()) {
+//            System.out.println(flight);
+//        }
+//        UserDAO userDAO = factoryDAO.getUserDAO();
+//
+//        userDAO.addUser(new User("Boqeb", "b2qe1ae1", "bowq@eqeeqwe.ru", Access.DISPATCHER));
 
 //        System.out.println(userDAO.getUserById(1));
 //        System.out.println(userDAO.getUserByLogin("Boqeb"));
