@@ -8,8 +8,8 @@ public class Staff {
     private int id;
     private String firstName;
     private String lastName;
-    private Profession profession; // => ENUM: Captain, FirstOfficer, etc
-
+    private Profession profession;
+    private CurrentState state;
 
     public Staff(String firstName, String lastName, Profession professionID) {
         this.firstName = firstName;
@@ -47,6 +47,14 @@ public class Staff {
 
     public void setProfession(Profession profession) {
         this.profession = profession;
+    }
+
+    public CurrentState getState() {
+        return state;
+    }
+
+    public void setState(CurrentState state) {
+        this.state = state;
     }
 
     @Override

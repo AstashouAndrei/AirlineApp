@@ -1,0 +1,706 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #5f646b;
+    height: 100%;
+    width: 100%;
+    display: table;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 50px;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    position: relative;
+}
+
+.header {
+    height: 70px;
+    margin: 0 auto;
+    background-color: #2D3238;
+    
+}
+
+.logo {
+    width: 95%;
+    float: left;
+    margin-left: 40px;
+    margin-top: 5px;
+    
+}
+
+#first-word {
+    color: #CE2B3A;
+}
+
+.span {
+    display: block;
+    vertical-align:bottom;
+}
+
+#second-word {
+    color: #2196F3;
+}
+
+#dispatcher, #dispatcher-inf {
+    
+    font-size: 26px;
+    color: #CE2B3A;
+    float: right;
+    /* font-size: 30px; */
+    /* padding-left: 1100px; */
+}
+
+.operation-pannel {
+    padding-left: 30px;
+    padding-bottom: 15px;
+    
+}
+
+.flight-id-input {
+    width: 10%;
+    height: 29px
+}
+
+.btn {
+    background: #2196F3;
+    color: #473f3e;
+    font-weight: bolder;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 0;
+    width: 10%;
+    height: 35px
+}
+
+.prepare {
+    visibility: hidden;
+    background: cyan;
+}
+
+.captains {
+    background: #24d450;
+}
+
+.officers {
+    background: #cab1ec;
+}
+
+.navigators {
+    background: #eef126;
+}
+
+.radiomans {
+    background: chocolate;
+}
+.attendants {
+    background: #f15cea;
+}
+
+.flight-table, .crew-table {
+    padding-left: 30px;
+    font-size: 16px;
+    color: #78c4ba;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table,
+th,
+td {
+    border: 2px solid #f1e28d;
+    height: 40px;
+}
+
+th {
+    background-color: #473f3e;
+    color: white;
+    height: 50px;
+}
+
+tr {
+    text-align: center;
+    cursor: pointer;
+    transition: all .25s ease-in-out
+}
+
+tr:hover {
+    background-color: #f1dd84;
+}
+.staff, .flight {
+    width: 55%;
+}
+.submit-crew {
+    width: 40%;
+    font-size: 20px;
+
+}
+
+.flight-table {
+    /* display: none; */
+}
+.flight-info, .currentflight{
+    padding-top: 15px;
+    /* padding-bottom: 15px; */
+    color: #00b7ff;
+    font-size: 16px;
+}
+
+.crew, .manage-panel, .currentflight {
+    display: none;
+}
+
+.staff, .submit-crew {
+    vertical-align:top;
+    display: inline-block; 
+}
+
+.staff-add-wrapper {
+    padding-left: 30px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+
+.staff-add, .submit-crew-form {
+    background: #473f3e;
+    width: 100%;
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 1.2);
+    font-size: 14px;
+    color: #78c4ba;
+}
+
+.staff-add:hover {
+    box-shadow: 8px 8px 10px 0 rgba(0, 0, 0, 0.50);
+}
+
+.form-group label {
+	color: #fff;
+	display: inline-block;
+	margin-bottom: 5px;
+}
+
+.first-last-name, .flight-and-crew {
+    padding-top: 15px;
+    overflow: auto;
+    text-align: center;
+}
+
+.fl-description, .fl-result{
+    font-size: 22px;
+}
+
+.fl-result {
+    color: chartreuse;
+}
+
+.profession {
+    padding-top: 15px;
+    overflow: auto;
+    text-align: center;
+}
+
+.addbtn {
+    text-align: center;
+    padding-bottom: 30px;
+    padding-top: 10px;
+}
+
+.form-control {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group {
+    display: inline-block;
+    width: 150px;
+    height: 60px;
+}
+
+.form-group small {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+}
+
+.form-group.error small {
+    color: #FC0E1F;
+    visibility: visible;
+}
+
+.form-group.success input {
+    border-color: #2EFB1F;
+}
+
+.form-group.error input {
+    border-color: #FC0E1F;
+}
+
+.inputbox, .crewInp {
+    height: 35px;
+    border: 2px solid #fff;
+    padding: 15px;
+    font-size: 12px;
+}
+
+.inputbox:focus, .crewInp:focus {
+    font-size: 16px;
+    outline-width: 2px;
+    outline-color: #2196F3;
+}
+
+.inputbox:focus::placeholder, .crewInp:focus::placeholder {
+    color: transparent;
+}
+.addStaff {
+    width: 30%;
+}
+
+
+
+/* .addFlight {
+    width: 30%;
+} */
+/* 
+
+
+
+.info-crew {
+    float: right;
+}
+
+.info-staff {
+    float: left;
+}
+
+
+
+
+
+
+
+
+
+ */
+
+/*21:30 27.01 working*/
+
+/*html,*/
+/*body {*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*background-color: #5f646b;*/
+    /*height: 100%;*/
+    /*width: 100%;*/
+    /*display: table;*/
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    /*font-weight: 600;*/
+    /*font-size: 50px;*/
+/*}*/
+
+/*.wrapper {*/
+    /*min-height: 100%;*/
+    /*height: auto !important;*/
+    /*height: 100%;*/
+    /*position: relative;*/
+/*}*/
+
+/*.header {*/
+    /*height: 70px;*/
+    /*margin: 0 auto;*/
+    /*background-color: #2D3238;*/
+/*}*/
+
+/*.logo {*/
+    /*float: left;*/
+    /*margin-left: 40px;*/
+    /*margin-top: 5px;*/
+/*}*/
+
+/*#first-word {*/
+    /*color: #CE2B3A;*/
+/*}*/
+
+/*#second-word {*/
+    /*color: #2196F3;*/
+/*}*/
+
+/*#main_menu_icon {*/
+    /*color: #CE2B3A;*/
+    /*font-size: 30px;*/
+    /*padding-right: 120px;*/
+/*}*/
+
+/*.fight-info-wrapper {*/
+    /*padding-left: 30px;*/
+    /*padding-bottom: 15px;*/
+/*}*/
+
+/*.flight-id-input {*/
+    /*width: 10%;*/
+    /*height: 29px*/
+/*}*/
+
+/*.btn {*/
+    /*background: #2196F3;*/
+    /*color: #fff;*/
+    /*text-transform: uppercase;*/
+    /*cursor: pointer;*/
+    /*border: 0;*/
+    /*width: 8.1%;*/
+    /*height: 35px*/
+/*}*/
+
+/*.start {*/
+    /*background: #24d450;*/
+/*}*/
+
+/*.finish {*/
+    /*background: #bc3af0;*/
+/*}*/
+
+/*.delay {*/
+    /*background: #eef126;*/
+/*}*/
+
+/*.cancel {*/
+    /*background: #e21818;*/
+/*}*/
+
+/*.flighttable {*/
+    /*padding-left: 30px;*/
+    /*font-size: 16px;*/
+    /*color: #78c4ba;*/
+/*}*/
+
+/*table {*/
+    /*border-collapse: collapse;*/
+    /*width: 90%;*/
+/*}*/
+
+/*table,*/
+/*th,*/
+/*td {*/
+    /*border: 2px solid #f1e28d;*/
+    /*height: 40px;*/
+/*}*/
+
+/*th {*/
+    /*background-color: #473f3e;*/
+    /*color: white;*/
+    /*height: 50px;*/
+/*}*/
+
+
+/*tr {*/
+    /*text-align: center;*/
+    /*cursor: pointer;*/
+    /*transition: all .25s ease-in-out*/
+/*}*/
+
+/*tr:hover {*/
+    /*background-color: #f1dd84;*/
+/*}*/
+
+/*.fight-edit-wrapper {*/
+    /*padding-left: 30px;*/
+    /*padding-top: 10px;*/
+    /*padding-bottom: 30px;*/
+/*}*/
+
+/*.flight-add {*/
+    /*background: #473f3e;*/
+    /*width: 35%;*/
+    /*box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 1.2);*/
+    /*font-size: 14px;*/
+    /*color: #78c4ba;*/
+/*}*/
+
+/*.flight-add:hover {*/
+    /*box-shadow: 8px 8px 10px 0 rgba(0, 0, 0, 0.50);*/
+/*}*/
+
+/*.itinerary {*/
+    /*padding-top: 15px;*/
+    /*overflow: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+/*.plane {*/
+    /*padding-top: 15px;*/
+    /*overflow: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+/*.addFlight {*/
+    /*width: 30%;*/
+/*}*/
+/*.addbtn {*/
+    /*text-align: center;*/
+    /*padding-bottom: 30px;*/
+    /*padding-top: 10px;*/
+/*}*/
+
+/*.form-control {*/
+    /*width: 100%;*/
+    /*box-sizing: border-box;*/
+/*}*/
+
+/*.form-group {*/
+    /*display: inline-block;*/
+    /*width: 150px;*/
+    /*height: 60px;*/
+/*}*/
+
+/*.form-group small {*/
+    /*visibility: hidden;*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*left: 5px;*/
+/*}*/
+
+/*.form-group.error small {*/
+    /*color: #FC0E1F;*/
+    /*visibility: visible;*/
+/*}*/
+
+/*.form-group.success input {*/
+    /*border-color: #2EFB1F;*/
+/*}*/
+
+/*.form-group.error input {*/
+    /*border-color: #FC0E1F;*/
+/*}*/
+
+/*.inputbox {*/
+    /*height: 35px;*/
+    /*border: 2px solid #fff;*/
+    /*padding: 15px;*/
+    /*font-size: 12px;*/
+/*}*/
+
+/*.inputbox:focus {*/
+    /*font-size: 16px;*/
+    /*outline-width: 2px;*/
+    /*outline-color: #2196F3;*/
+/*}*/
+
+/*input:focus::placeholder {*/
+    /*color: transparent;*/
+/*}*/
+
+
+/*.selected {*/
+    /*background-color: #f1dd84;*/
+    /*font-weight: bold;*/
+    /*color: #fff;*/
+/*}*/
+
+/*html,*/
+/*body {*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*background-color: #5f646b;*/
+    /*height: 100%;*/
+    /*width: 100%;*/
+    /*display: table;*/
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    /*font-weight: 600;*/
+    /*font-size: 50px;*/
+/*}*/
+
+/*.wrapper {*/
+    /*min-height: 100%;*/
+    /*height: auto !important;*/
+    /*height: 100%;*/
+    /*position: relative;*/
+/*}*/
+
+/*.header {*/
+    /*height: 70px;*/
+    /*margin: 0 auto;*/
+    /*background-color: #2D3238;*/
+/*}*/
+
+/*.logo {*/
+    /*float: left;*/
+    /*margin-left: 40px;*/
+    /*margin-top: 5px;*/
+/*}*/
+
+/*#first-word {*/
+    /*color: #CE2B3A;*/
+/*}*/
+
+/*#second-word {*/
+    /*color: #2196F3;*/
+/*}*/
+
+/*#main_menu_icon {*/
+    /*color: #CE2B3A;*/
+    /*font-size: 30px;*/
+    /*padding-right: 120px;*/
+/*}*/
+
+/*.fl-wrapper {*/
+    /*padding-left: 30px;*/
+    /*padding-bottom: 15px;*/
+/*}*/
+
+
+/*.flighttable {*/
+    /*padding-left: 30px;*/
+    /*font-size: 16px;*/
+    /*color: #78c4ba;*/
+/*}*/
+
+/*table {*/
+    /*border-collapse: collapse;*/
+    /*width: 50%;*/
+/*}*/
+
+/*table,*/
+/*th,*/
+/*td {*/
+    /*text-align: center;*/
+    /*border: 2px solid #f1e28d;*/
+/*}*/
+
+/*th {*/
+    /*text-align: center;*/
+    /*background-color: #473f3e;*/
+    /*color: white;*/
+    /*height: 50px;*/
+/*}*/
+
+/*td {*/
+    /*text-align: center;*/
+    /*height: 40px;*/
+/*}*/
+
+/*tr {*/
+    /*text-align: center;*/
+    /*cursor: pointer;*/
+    /*transition: all .25s ease-in-out*/
+/*}*/
+
+/*.selected {*/
+    /*background-color: #f1dd84;*/
+    /*font-weight: bold;*/
+    /*color: #fff;*/
+/*}*/
+
+/*.container {*/
+    /*padding-left: 30px;*/
+    /*padding-top: 30px;*/
+/*}*/
+
+/*.flight-add {*/
+    /*background: #473f3e;*/
+    /*width: 35%;*/
+    /*box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 1.2);*/
+    /*font-size: 14px;*/
+    /*color: #78c4ba;*/
+/*}*/
+
+/*.flight-add:hover {*/
+    /*box-shadow: 8px 8px 10px 0 rgba(0, 0, 0, 0.50);*/
+/*}*/
+
+/*.itinerary {  */
+    /*padding-top: 15px;*/
+    /*overflow: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+/*.plane {*/
+    /*padding-top: 15px;*/
+    /*overflow: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+/*.addbtn {*/
+    /*padding-top: 15px;*/
+    /*overflow: auto;*/
+    /*text-align: center;*/
+/*}*/
+
+/*.form-control {*/
+    /*width: 100%;*/
+    /*box-sizing: border-box;*/
+/*}*/
+
+/*.form-group {*/
+    /*display: inline-block;*/
+    /*width: 150px;*/
+    /*height: 60px; */
+/*}*/
+
+/*!* .form-group label {*/
+    /*color: #fff;*/
+/*} *!*/
+
+/*.form-group small {*/
+    /*visibility: hidden;*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*left: 5px;*/
+/*}*/
+
+/*.form-group.error small {*/
+    /*color: #FC0E1F;*/
+    /*visibility: visible;*/
+/*}*/
+
+/*.form-group.success input {*/
+    /*border-color: #2EFB1F;*/
+/*}*/
+
+/*.form-group.error input {*/
+    /*border-color: #FC0E1F;*/
+/*}*/
+
+/*.inputbox {*/
+    /*height: 35px;*/
+    /*border: 2px solid #fff;*/
+    /*padding: 15px;*/
+    /*font-size: 12px;*/
+/*}*/
+
+/*.inputbox:focus {*/
+    /*font-size: 16px;*/
+    /*outline-width: 2px;*/
+    /*outline-color: #2196F3;*/
+/*}*/
+
+/*input:focus::placeholder {*/
+    /*color: transparent;*/
+/*}*/
+
+/*.btn {*/
+    /*background: #2196F3;*/
+    /*color: #fff;*/
+    /*text-transform: uppercase;*/
+    /*cursor: pointer;*/
+    /*border: 0;*/
+/*}*/
+/*.fl-id-inp {*/
+    /*width: 10%;*/
+    /*height: 29px*/
+/*}*/
+/*.flight-all, .flight-by-id  {*/
+    /*width: 10%;*/
+    /*height: 35px*/
+/*}*/
+
+/*.add-flight {*/
+    /*width: 100%;*/
+    /*height: 35px;*/
+/*}*/

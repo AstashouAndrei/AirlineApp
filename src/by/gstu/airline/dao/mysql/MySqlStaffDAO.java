@@ -41,7 +41,7 @@ public class MySqlStaffDAO implements StaffDAO {
             statement.setString(1, staff.getFirstName());
             statement.setString(2, staff.getLastName());
             statement.setInt(3, staff.getProfession().getProfessionID());
-            statement.setString(4, CurrentState.STANDBY.getState());
+//            statement.setString(4, CurrentState.STANDBY.getState());
             statement.executeUpdate();
             logger.trace("Create result set");
             resultSet = statement.getGeneratedKeys();
@@ -92,6 +92,40 @@ public class MySqlStaffDAO implements StaffDAO {
     }
 
     /**
+     * Returns staff from data base by given full name
+     *
+     * @param fullName staff id
+     * @return staff
+     * @throws DAOException DAOException
+     */
+    @Override
+    public Staff getStaffByFullName(String fullName) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Staff staff;
+        try {
+            logger.trace("Open connection");
+            connection = SqlConnection.createConnection();
+            logger.trace("Create prepared statement");
+            statement = connection.prepareStatement(SqlCommands.getCommand("GET_STAFF_BY_FULL_NAME"));
+            statement.setString(1, fullName);
+            logger.trace("Create result set");
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            staff = initializeStaff(resultSet);
+        } catch (SQLException e) {
+            logger.error("Cannot get staff from data base by given full name", e);
+            throw new DAOException("Cannot get staff from data base by given full name", e);
+        } finally {
+            SqlConnection.close(resultSet);
+            SqlConnection.close(statement);
+            SqlConnection.close(connection);
+        }
+        return staff;
+    }
+
+    /**
      * Return list of staffs with given state
      *
      * @param state staff current state
@@ -119,6 +153,42 @@ public class MySqlStaffDAO implements StaffDAO {
         } catch (SQLException e) {
             logger.error("Cannot get list of staffs from data base with given state", e);
             throw new DAOException("Cannot get list of staffs from data base with given state", e);
+        } finally {
+            SqlConnection.close(resultSet);
+            SqlConnection.close(statement);
+            SqlConnection.close(connection);
+        }
+        return staffList;
+    }
+
+    /**
+     * Return list of standby staffs with given profession
+     *
+     * @param profession staff current state
+     * @return list of staffs with given state
+     * @throws DAOException DAOException
+     */
+    @Override
+    public List<Staff> getStaffByProfession(Profession profession) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Staff> staffList = new ArrayList<Staff>();
+        try {
+            logger.trace("Open connection");
+            connection = SqlConnection.createConnection();
+            logger.trace("Create prepared statement");
+            statement = connection.prepareStatement(SqlCommands.getCommand("GET_STANDBY_STAFFS_BY_PROFESSION"));
+            statement.setInt(1, profession.getProfessionID());
+            logger.trace("Create result set");
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Staff staff = initializeStaff(resultSet);
+                staffList.add(staff);
+            }
+        } catch (SQLException e) {
+            logger.error("Cannot get list of staffs from data base with given profession", e);
+            throw new DAOException("Cannot get list of staffs from data base with given profession", e);
         } finally {
             SqlConnection.close(resultSet);
             SqlConnection.close(statement);
@@ -182,7 +252,7 @@ public class MySqlStaffDAO implements StaffDAO {
     }
 
     /**
-     * Initialize and returns user by fields from data base
+     * Initialize and returns staff by fields from data base
      *
      * @param resultSet result set
      * @return user
@@ -195,9 +265,12 @@ public class MySqlStaffDAO implements StaffDAO {
             String firstName = resultSet.getString("FirstName");
             String lastName = resultSet.getString("LastName");
             int professionID = resultSet.getInt("ProfessionID");
+            String stateDescription = resultSet.getString("CurrentState");
             Profession profession = Profession.getProfessionByID(professionID);
+            CurrentState state = CurrentState.getStateByDescription(stateDescription);
             staff = new Staff(firstName, lastName, profession);
             staff.setId(id);
+            staff.setState(state);
         } catch (SQLException e) {
             logger.error("Cannot initialize staff", e);
             throw new DAOException("Cannot initialize staff", e);

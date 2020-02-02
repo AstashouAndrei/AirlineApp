@@ -98,3 +98,15 @@ java.sql.SQLException: Illegal operation on empty result set.
 	at by.gstu.airline.dao.mysql.MySqlFlightDAO.initializeFlight(MySqlFlightDAO.java:249)
 	at by.gstu.airline.dao.mysql.MySqlFlightDAO.getIFlightByCode(MySqlFlightDAO.java:111)
 	at by.gstu.airline.Runner.main(Runner.java:24)
+2020-02-02 17:11:39 ERROR MySqlStaffDAO:51 - Cannot add staff to data base
+java.sql.SQLException: Column count doesn't match value count at row 1
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1347)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at by.gstu.airline.dao.mysql.MySqlStaffDAO.hireStaff(MySqlStaffDAO.java:45)
+	at by.gstu.airline.Runner.main(Runner.java:25)

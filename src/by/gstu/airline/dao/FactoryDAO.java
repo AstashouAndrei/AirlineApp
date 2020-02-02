@@ -15,7 +15,7 @@ public abstract class FactoryDAO {
 
     public abstract ItineraryDAO getItineraryDAO();
 
-    public abstract CrewDAO getCrewTeamDAO();
+    public abstract CrewDAO getCrewDAO();
 
     public abstract PlaneDAO getPlaneDAO();
 
@@ -23,10 +23,14 @@ public abstract class FactoryDAO {
 
     public abstract UserDAO getUserDAO();
 
+    /**
+     * Method returns factory DAO according with data base type
+     *
+     * @return factory DAO
+     * @throws DBTypeException DBTypeException
+     */
     public static FactoryDAO getFactoryDAO() throws DBTypeException {
-
         ConfigurationManager manager = ConfigurationManager.getInstance();
-
         if (manager.DATA_BASE.equals(DataBaseType.MySQL.getDataBaseType())) {
             return new MySqlFactoryDAO();
         } else {

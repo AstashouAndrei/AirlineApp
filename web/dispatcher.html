@@ -1,14 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dispatcher</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="resources/css/dispatcher.css">
+   <title>Dispatcher</title>
 </head>
-<body>
-<div class="hello">
-    <h1>Hello dispatcher</h1>
+
+<body ">
+<div class=" wrapper">
+
+   <div class="header">
+      <div class="logo">
+         <span id="first-word">Red</span>
+         <span id="second-word">W!ngs</span>
+         <img src="resources/css/img/logo.png">
+         <span id="dispatcher" value="das"></span>
+      </div>
+   </div>
+
+   <div class="operation-pannel">
+      <div class="info-panel" id="inf-panel">
+         <input type="submit" class="btn" id="showFlights" value="Show all flights">
+         <input type="submit" class="btn" id="showFlightsWithoutCrew" value="No crew flights">
+         <input type="submit" class="btn prepare" id="prepareCrew" value="Prepare crew">
+      </div>
+      <div class="currentflight" id="currentFlight">
+         <span class="fl-description">Flight code: </span>
+         <span class="fl-result" id="codeResult"></span><br>
+         <span class="fl-description">Plane: </span>
+         <span class="fl-result" id="planeResult"></span><br>
+         <span class="fl-description">Departure: </span>
+         <span class="fl-result" id="departureResult"></span><br>
+         <span class="fl-description">Arrival: </span>
+         <span class="fl-result" id="arrivalResult"></span><br>
+      </div>
+      <div class="manage-panel" id="crew-mng-panel">
+         <input type="submit" class="btn captains" id="captainsList" value="Captain's">
+         <input type="submit" class="btn officers" id="officersList" value="First officer's">
+         <input type="submit" class="btn navigators" id="navigatorsList" value="Navigator's">
+         <input type="submit" class="btn radiomans" id="radiomansList" value="Radio operator's">
+         <input type="submit" class="btn attendants" id="attendantsList" value="Flight attendant's">
+      </div>
+   </div>
+   <div class="flight" id="flightInfo">
+      <div class="flight-table">
+         <table class="table" id="flight-table">
+            <tr>
+               <th>ID</th>
+               <th>Flight code</th>
+               <th>Departure</th>
+               <th>Arrival</th>
+               <th>Plane type</th>
+               <th>Current state</th>
+            </tr>
+         </table>
+      </div>
+   </div>
+   <div class="crew" id="crewInfo">
+      <div class="staff">
+         <div class="crew-table">
+            <table class="table" id="staff-table">
+               <tr>
+                  <th>ID</th>
+                  <th>First name</th>
+                  <th>Last name</th>
+                  <th>Profession</th>
+                  <th>Current state</th>
+            </table>
+         </div>
+         <div class="staff-add-wrapper">
+            <div class="staff-add" id="staff-add">
+               <div class="first-last-name">
+                  <div class="form-group">
+                     <label>First name</label>
+                     <input type="text" class="form-control inputbox" id="firstName" placeholder="First name">
+                     <small>Invalid or blank first name</small>
+                  </div>
+                  <div class="form-group">
+                     <label>Last name</label>
+                     <input type="text" class="form-control inputbox" id="lastName" placeholder="Last name">
+                     <small>Invalid or blank last name</small>
+                  </div>
+               </div>
+               <div class="profession">
+                  <input type="radio" name="profession" id="captain" value="1" checked> Captain
+                  <input type="radio" name="profession" id="officer" value="2"> First officer
+                  <input type="radio" name="profession" id="navigator" value="3"> Navigator
+                  <input type="radio" name="profession" id="radioman" value="4"> Radio operator
+                  <input type="radio" name="profession" id="attendant" value="5"> Flight attendant
+               </div>
+               <div class="addbtn">
+                  <input type="submit" class="btn addStaff" id="addStaff" value="Hire staff">
+                  <input type="submit" class="btn addStaff" id="addStaffClear" value="Clear">
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="submit-crew">
+         <div class="submit-crew-form" id="submit-crew">
+            <div class="flight-and-crew">
+               <div class="form-group">
+                  <label>Captain</label>
+                  <input type="text" class="form-control crewInp" id="crewCaptain" placeholder="Captain">
+               </div>
+               <div class="form-group">
+                  <label>First officer</label>
+                  <input type="text" class="form-control crewInp" id="crewOfficer" placeholder="First officer">
+               </div>
+               <div class="form-group">
+                  <label>Navigator</label>
+                  <input type="text" class="form-control crewInp" id="crewNavigator" placeholder="Navigator">
+               </div>
+               <div class="form-group">
+                  <label>Radio operator</label>
+                  <input type="text" class="form-control crewInp" id="crewRadioman" placeholder="Radio operator">
+               </div>
+            </div>
+            <div class="flight-and-crew">
+               <div class="form-group">
+                  <label>Flight attendant #1</label>
+                  <input type="text" class="form-control crewInp" id="crewAttendant1" placeholder="Flight attendant #1">
+               </div>
+               <div class="form-group">
+                  <label>Flight attendant #2</label>
+                  <input type="text" class="form-control crewInp" id="crewAttendant2" placeholder="Flight attendant #2">
+               </div>
+               <div class="form-group">
+                  <label>Flight attendant #3</label>
+                  <input type="text" class="form-control crewInp" id="crewAttendant3" placeholder="Flight attendant #3">
+               </div>
+               <div class="form-group">
+                  <label>Flight attendant #4</label>
+                  <input type="text" class="form-control crewInp" id="crewAttendant4" placeholder="Flight attendant #4">
+               </div>
+            </div>
+            <div class="addbtn">
+               <input type="submit" class="btn addStaff" id="submitCrew" value="Submit crew for flight">
+               <input type="submit" class="btn addStaff" id="clearCrew" value="Clear">
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
+<script src="resources/js/dispatcher.js"></script>
 </body>
+
 </html>

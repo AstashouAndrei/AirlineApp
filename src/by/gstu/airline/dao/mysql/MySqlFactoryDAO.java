@@ -13,7 +13,7 @@ public class MySqlFactoryDAO extends FactoryDAO {
     }
 
     @Override
-    public CrewDAO getCrewTeamDAO() {
+    public CrewDAO getCrewDAO() {
         return new MySqlCrewDAO();
     }
 
