@@ -22,7 +22,6 @@ body {
     height: 70px;
     margin: 0 auto;
     background-color: #2D3238;
-    
 }
 
 .logo {
@@ -30,11 +29,14 @@ body {
     float: left;
     margin-left: 40px;
     margin-top: 5px;
-    
 }
 
 #first-word {
     color: #CE2B3A;
+}
+
+#second-word {
+    color: #2196F3;
 }
 
 .span {
@@ -42,17 +44,14 @@ body {
     vertical-align:bottom;
 }
 
-#second-word {
-    color: #2196F3;
-}
-
 #dispatcher, #dispatcher-inf {
-    
-    font-size: 26px;
+    font-size: 20px;
     color: #CE2B3A;
     float: right;
-    /* font-size: 30px; */
-    /* padding-left: 1100px; */
+}
+#dispatcher-inf {
+    font-size: 20px;
+    color:#2196F3;
 }
 
 .operation-pannel {

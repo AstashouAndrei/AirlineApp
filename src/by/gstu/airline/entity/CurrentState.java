@@ -10,7 +10,6 @@ public enum CurrentState {
     STANDBY("Standby"),
     SCHEDULED("Scheduled"),
     ON_FLIGHT("On flight"),
-    ARRIVED("Arrived"),
     DELAYED("Delayed"),
     CANCELLED("Cancelled");
 
@@ -34,8 +33,6 @@ public enum CurrentState {
                 return SCHEDULED;
             case "On flight":
                 return ON_FLIGHT;
-            case "Arrived":
-                return ARRIVED;
             case "Delayed":
                 return DELAYED;
             case "Cancelled":

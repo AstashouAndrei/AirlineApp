@@ -1,17 +1,16 @@
 package by.gstu.airline.servlets;
 
-import by.gstu.airline.dao.FactoryDAO;
-import by.gstu.airline.dao.FlightDAO;
-import by.gstu.airline.dao.ItineraryDAO;
-import by.gstu.airline.dao.PlaneDAO;
 import by.gstu.airline.entity.CurrentState;
 import by.gstu.airline.entity.Flight;
 import by.gstu.airline.entity.Itinerary;
 import by.gstu.airline.entity.Plane;
-import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.entity.services.Administrator;
+import by.gstu.airline.entity.services.AdministratorService;
+import by.gstu.airline.entity.services.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,118 +18,96 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/AdminController")
 public class AdminController extends HttpServlet {
+
+    private Administrator administrator;
 
     public AdminController() {
         super();
     }
 
-    private FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
-    private FlightDAO flightDAO = factoryDAO.getFlightDAO();
-    private PlaneDAO planeDAO = factoryDAO.getPlaneDAO();
-    private ItineraryDAO itineraryDAO = factoryDAO.getItineraryDAO();
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        StringBuilder builder = new StringBuilder();
-        String line;
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
+        if (request.getAttribute("user") != null) {
+            showAdministratorPage(request, response);
+        } else {
+            executeAdministratorCommand(request, response);
         }
-
-        JSONObject jsonObject = new JSONObject(builder.toString());
-        String action = jsonObject.getString("action");
-
-        String flightCode;
-        CurrentState state;
-
-        switch (action) {
-            case ("showAllFlights"):
-                showFlights(response);
-                break;
-            case ("showFlightByID"):
-                int flightID = jsonObject.getInt("flightID");
-                showFlightByID(flightID, response);
-                break;
-            case ("addFlight"):
-                try {
-                    Flight flight = initializeFlight(jsonObject);
-                    planeDAO.addPlane(flight.getPlane());
-                    itineraryDAO.addItinerary(flight.getItinerary());
-                    flightDAO.addFlight(flight);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                } finally {
-                    showFlights(response);
-                }
-                break;
-            case ("removeFlight"):
-                try {
-                    flightCode = jsonObject.getString("flightCode");
-                    flightDAO.removeFlight(flightCode);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                } finally {
-                    showFlights(response);
-                }
-                break;
-            case ("showManageble"):
-                state = CurrentState.getStateByDescription(jsonObject.getString("state"));
-                showFlightsExceptState(response, state);
-                break;
-            case ("showRemovable"):
-                state = CurrentState.getStateByDescription(jsonObject.getString("state"));
-                showFlightsByState(response, state);
-                break;
-            case ("startFlight"):
-                try {
-                    flightCode = jsonObject.getString("flightCode");
-                    flightDAO.changeFlightState(flightDAO.getIFlightByCode(flightCode), CurrentState.ON_FLIGHT);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                }
-                showFlightsExceptState(response, CurrentState.STANDBY);
-                break;
-            case ("finishFlight"):
-                try {
-                    flightCode = jsonObject.getString("flightCode");
-                    flightDAO.changeFlightState(flightDAO.getIFlightByCode(flightCode), CurrentState.STANDBY);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                }
-                showFlightsExceptState(response, CurrentState.STANDBY);
-                break;
-            case ("delayFlight"):
-                try {
-                    flightCode = jsonObject.getString("flightCode");
-                    flightDAO.changeFlightState(flightDAO.getIFlightByCode(flightCode), CurrentState.DELAYED);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                }
-                showFlightsExceptState(response, CurrentState.STANDBY);
-                break;
-            case ("cancelFlight"):
-                try {
-                    flightCode = jsonObject.getString("flightCode");
-                    flightDAO.changeFlightState(flightDAO.getIFlightByCode(flightCode), CurrentState.STANDBY);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                }
-                showFlightsExceptState(response, CurrentState.STANDBY);
-                break;
-            default:
-                break;
-
-        }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
+    }
+
+    /**
+     * Create object of airline administrator and forward to administrator page
+     *
+     * @param request  request
+     * @param response response
+     * @throws IOException      IOException
+     * @throws ServletException ServletException
+     */
+    private void showAdministratorPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        RequestDispatcher requestDispatcher;
+        administrator = new Administrator((User) request.getAttribute("user"), new AdministratorService());
+        requestDispatcher = request.getRequestDispatcher("/admin.html");
+        requestDispatcher.forward(request, response);
+    }
+
+    /**
+     * Handles request according by action and sends corresponding response
+     *
+     * @param request  request
+     * @param response response
+     * @throws IOException IOException
+     */
+    private void executeAdministratorCommand(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        JSONObject json = getJSONObject(request);
+        String action = json.getString("action");
+
+        switch (action) {
+            case ("addFlight"):
+                administrator.addFlight(initializeFlight(json));
+                showFlights(response);
+                break;
+            case ("removeFlight"):
+                administrator.removeFlight(json.getString("flightCode"));
+                showFlights(response);
+                break;
+            case ("startFlight"):
+                administrator.startFlight(json.getString("flightCode"));
+                showFlightsExceptState(response, CurrentState.STANDBY);
+                break;
+            case ("finishFlight"):
+                administrator.finishFlight(json.getString("flightCode"));
+                showFlightsExceptState(response, CurrentState.STANDBY);
+                break;
+            case ("delayFlight"):
+                administrator.delayFlight(json.getString("flightCode"));
+                showFlightsExceptState(response, CurrentState.STANDBY);
+                break;
+            case ("cancelFlight"):
+                administrator.cancelFlight(json.getString("flightCode"));
+                showFlightsExceptState(response, CurrentState.STANDBY);
+                break;
+            case ("showFlightByID"):
+                showFlightByID(json.getInt("flightID"), response);
+                break;
+            case ("showManageble"):
+                showFlightsExceptState(response, CurrentState.getStateByDescription(json.getString("state")));
+                break;
+            case ("showRemovable"):
+                showFlightsByState(response, CurrentState.getStateByDescription(json.getString("state")));
+                break;
+            case ("init"):
+                initUser(response);
+                break;
+            default:
+                showFlights(response);
+                break;
+        }
     }
 
     /**
@@ -140,14 +117,7 @@ public class AdminController extends HttpServlet {
      * @throws IOException IOException
      */
     private void showFlights(HttpServletResponse response) throws IOException {
-        try {
-            List<Flight> flightList = flightDAO.getFlightsList();
-            JSONArray array = new JSONArray(flightList);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
+        sendArrayResponse(new JSONArray(administrator.getAllFlights()), response);
     }
 
     /**
@@ -159,14 +129,7 @@ public class AdminController extends HttpServlet {
      * @throws IOException IOException
      */
     private void showFlightsExceptState(HttpServletResponse response, CurrentState state) throws IOException {
-        try {
-            List<Flight> flightList = flightDAO.getFlightsExceptState(state);
-            JSONArray array = new JSONArray(flightList);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
+        sendArrayResponse(new JSONArray(administrator.getFlightsExceptState(state)), response);
     }
 
     /**
@@ -178,14 +141,7 @@ public class AdminController extends HttpServlet {
      * @throws IOException IOException
      */
     private void showFlightsByState(HttpServletResponse response, CurrentState state) throws IOException {
-        try {
-            List<Flight> flightList = flightDAO.getFlightsByState(state);
-            JSONArray array = new JSONArray(flightList);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
+        sendArrayResponse(new JSONArray(administrator.getFlightsByState(state)), response);
     }
 
     /**
@@ -196,14 +152,9 @@ public class AdminController extends HttpServlet {
      * @throws IOException IOException
      */
     private void showFlightByID(int id, HttpServletResponse response) throws IOException {
-        try {
-            Flight flight = flightDAO.getIFlightByID(id);
-            JSONObject responseData = new JSONObject(flight);
-            response.setContentType("application/json");
-            response.getWriter().write(responseData.toString());
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
+        JSONObject responseData = new JSONObject(administrator.getFlightByID(id));
+        response.setContentType("application/json");
+        response.getWriter().write(responseData.toString());
     }
 
     /**
@@ -213,17 +164,55 @@ public class AdminController extends HttpServlet {
      * @return flight
      */
     private Flight initializeFlight(JSONObject jsonObject) {
+
         String flightCode = jsonObject.getString("flightCode");
         String departure = jsonObject.getString("departure");
         String arrival = jsonObject.getString("arrival");
+        Itinerary itinerary = new Itinerary(flightCode, departure, arrival);
+
         String planeType = jsonObject.getString("planeType");
         int passengerCapacity = jsonObject.getInt("passengerCapacity");
         int flightRange = jsonObject.getInt("flightRange");
         int fuelConsumption = jsonObject.getInt("fuelConsumption");
-        Itinerary itinerary = new Itinerary(flightCode, departure, arrival);
         Plane plane = new Plane(planeType, passengerCapacity, flightRange, fuelConsumption);
-        Flight flight = new Flight(itinerary, plane);
-        System.out.println(flight);
-        return flight;
+
+        return new Flight(itinerary, plane);
     }
+
+    /**
+     * Reurns JSONObject received from request
+     *
+     * @param request request
+     * @return JSONObject
+     * @throws IOException IOException
+     */
+    private JSONObject getJSONObject(HttpServletRequest request) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        String line;
+        BufferedReader reader = request.getReader();
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return new JSONObject(builder.toString());
+    }
+
+    /**
+     * Sends JSONArray in response
+     *
+     * @param array    JSONArray
+     * @param response response
+     * @throws IOException IOException
+     */
+    private void sendArrayResponse(JSONArray array, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.getWriter().write(array.toString());
+    }
+
+    private void initUser(HttpServletResponse response) throws IOException {
+        JSONObject responseData = new JSONObject();
+        responseData.put("administrator", administrator.getUser().getLogin());
+        response.setContentType("application/json");
+        response.getWriter().write(responseData.toString());
+    }
+
 }

@@ -23,11 +23,21 @@ let addFlightClearBtn = document.getElementById("addFlightCancel");
 let flightID = document.getElementById('flightID');
 let operatingPanel = document.getElementById("mng-panel");
 
+let administratorLogin = document.getElementById('admin-inf');
+
 let action;
 let state;
 
 let table = document.getElementById('flight-table'),
     rIndex;
+
+function init() {
+    action = 'init';
+    let requestData = {
+        action: action
+    };
+    callServlet(requestData, action);
+}
 
 showFlightByIdBtn.addEventListener('click', function () {
     operatingPanel.style.display = "none";
@@ -130,7 +140,6 @@ delayFlightBtn.addEventListener('click', function () {
 });
 
 cancelFlightCancelBtn.addEventListener('click', function () {
-    clearInputs();
     action = 'cancelFlight';
     let requestData = {
         flightCode: flightCodeInp.value,
@@ -187,12 +196,19 @@ function showResult(data, action) {
         case 'showFlightByID':
             showFlight(data);
             break;
+        case 'init':
+            initUser(data);
+            break;
         default:
             showFlights(data);
             break;
     }
     clearInputs();
     makeTableActive(table);
+}
+
+function initUser(data) {
+    administratorLogin.textContent = data.administrator;
 }
 
 function showFlights(data) {

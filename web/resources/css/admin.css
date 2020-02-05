@@ -25,6 +25,7 @@ body {
 }
 
 .logo {
+    width: 95%;
     float: left;
     margin-left: 40px;
     margin-top: 5px;
@@ -38,6 +39,11 @@ body {
     color: #2196F3;
 }
 
+.span {
+    display: block;
+    vertical-align:bottom;
+}
+
 #main_menu_icon {
     color: #CE2B3A;
     font-size: 30px;
@@ -47,6 +53,16 @@ body {
 .fight-info-wrapper {
     padding-left: 30px;
     padding-bottom: 15px;
+}
+
+#admin, #admin-inf {
+    font-size: 20px;
+    color: #CE2B3A;
+    float: right;
+}
+#admin-inf {
+    font-size: 20px;
+    color:#2196F3;
 }
 
 .flight-id-input {

@@ -6,7 +6,7 @@ let welcomeContainer = document.getElementById('welcome');
 let logAction = 'login';
 let regAction = 'register';
 
-let logButton = document.getElementById("btnlog");
+// let logButton = document.getElementById("btnlog");
 let regButton = document.getElementById("btnreg");
 
 let logUserName = document.getElementById('login-username');
@@ -32,18 +32,18 @@ document.querySelector('.loginlink').addEventListener('click', function () {
     registrationContainer.style.display = 'none';
 });
 
-logButton.addEventListener('click', function () {
-    let logUserNameValue = logUserName.value.trim();
-    let logUserPassValue = logUserPass.value.trim();
-    if (validateLog(logUserNameValue, logUserPassValue)) {
-        let requestData = {
-            login: logUserNameValue,
-            password: logUserPassValue,
-            action: logAction
-        };
-        callServlet(requestData);
-    }
-});
+// logButton.addEventListener('click', function () {
+//     let logUserNameValue = logUserName.value.trim();
+//     let logUserPassValue = logUserPass.value.trim();
+//     if (validateLog(logUserNameValue, logUserPassValue)) {
+//         let requestData = {
+//             login: logUserNameValue,
+//             password: logUserPassValue,
+//             action: logAction
+//         };
+//         callServlet(requestData);
+//     }
+// });
 
 regButton.addEventListener('click', function () {
     let regUserNameValue = regUserName.value.trim();

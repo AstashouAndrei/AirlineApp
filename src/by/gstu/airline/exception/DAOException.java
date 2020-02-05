@@ -1,6 +1,6 @@
 package by.gstu.airline.exception;
 
-public class DAOException extends Exception{
+public class DAOException extends RuntimeException{
 
     public DAOException() {
         super();

@@ -1,15 +1,15 @@
 package by.gstu.airline.entity.services;
 
+import by.gstu.airline.entity.CurrentState;
 import by.gstu.airline.entity.Flight;
-import by.gstu.airline.exception.DAOException;
 import org.apache.log4j.Logger;
 
+import java.util.List;
+
 /**
- * Class with description entity of administrator object
+ * Class with description entity and actions of administrator object
  */
 public class Administrator {
-
-    private static Logger logger = Logger.getLogger(Administrator.class.getName());
 
     private final User user;
     private final AdministratorService administratorService;
@@ -19,52 +19,71 @@ public class Administrator {
         this.administratorService = administratorService;
     }
 
+    public void addFlight(Flight flight) {
+        administratorService.addFlight(flight);
+    }
+
+    public void removeFlight(String flightCode) {
+        administratorService.removeFlight(flightCode);
+    }
+
+    public List<Flight> getAllFlights() {
+        return administratorService.getAllFlights();
+    }
+
+    public Flight getFlightByID(int id) {
+        return administratorService.getFlightByID(id);
+    }
+
+    public List<Flight> getFlightsByState(CurrentState state) {
+        return administratorService.getFlightsByState(state);
+    }
+
+    public List<Flight> getFlightsExceptState(CurrentState state) {
+        return administratorService.getFlightsExceptState(state);
+    }
+
     /**
      * Starts flight, sets to each member of crew status "On flight"
      *
-     * @param flight flight
-     * @throws DAOException DAOException
+     * @param flightCode flightCode
      */
-    public void startFlight(Flight flight) throws DAOException {
-        logger.trace(user.getLogin() + " starts flight");
-        administratorService.startFlight(flight);
+    public void startFlight(String flightCode) {
+        administratorService.startFlight(flightCode);
     }
 
     /**
      * Finishes flight, sets to each member of crew status "Standby",
      * removes given flight crew from crew table data base
      *
-     * @param flight flight
-     * @throws DAOException DAOException
+     * @param flightCode flightCode
      */
-    public void finishFlight(Flight flight) throws DAOException {
-        logger.trace(user.getLogin() + " finishes flight");
-        administratorService.finishFlight(flight);
+    public void finishFlight(String flightCode) {
+        administratorService.finishFlight(flightCode);
     }
 
     /**
      * Delays flight, sets to each member of crew status "Scheduled"
      *
-     * @param flight flight
-     * @throws DAOException DAOException
+     * @param flightCode flightCode
      */
-    public void delayFlight(Flight flight) throws DAOException {
-        logger.trace(user.getLogin() + " delays flight");
-        administratorService.delayFlight(flight);
+    public void delayFlight(String flightCode) {
+        administratorService.delayFlight(flightCode);
     }
 
     /**
      * Cancels flight, sets to each member of crew status "Standby",
      * removes given flight crew from crew table data base
      *
-     * @param flight flight
-     * @throws DAOException DAOException
+     * @param flightCode flightCode
      */
-    public void cancelFlight(Flight flight) throws DAOException {
-        logger.trace(user.getLogin() + " cancels flight");
-        administratorService.cancelFlight(flight);
+    public void cancelFlight(String flightCode) {
+        administratorService.cancelFlight(flightCode);
     }
 
+    public User getUser() {
+        return user;
+    }
 
     @Override
     public boolean equals(Object o) {

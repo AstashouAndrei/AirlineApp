@@ -1,53 +1,90 @@
 package by.gstu.airline.entity.services;
 
-import by.gstu.airline.dao.CrewDAO;
-import by.gstu.airline.dao.PlaneDAO;
-import by.gstu.airline.dao.StaffDAO;
+import by.gstu.airline.dao.*;
 import by.gstu.airline.entity.*;
-import by.gstu.airline.exception.DAOException;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 
 /**
- * Class with crew building methods description
+ * Class with dispatcher methods description
  */
 
 public class DispatcherService {
 
-    private static Logger logger = Logger.getLogger(DispatcherService.class.getName());
+    private final FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
+    private final FlightDAO flightDAO = factoryDAO.getFlightDAO();
+    private final StaffDAO staffDAO = factoryDAO.getStaffDAO();
+    private final CrewDAO crewDAO = factoryDAO.getCrewDAO();
 
-    private final StaffDAO staffDAO;
-    private final CrewDAO crewDAO;
-    private final PlaneDAO planeDAO;
-
-    public DispatcherService(StaffDAO staffDAO, CrewDAO crewDAO, PlaneDAO planeDAO) {
-        this.staffDAO = staffDAO;
-        this.crewDAO = crewDAO;
-        this.planeDAO = planeDAO;
+    /**
+     * Gets from data base and returns list of all airline flights
+     *
+     * @return list of all flights
+     */
+    public List<Flight> getAllFlights() {
+        return flightDAO.getFlightsList();
     }
 
     /**
-     * Builds and returns crew with random staff for given flight
+     * Gets from data base and returns list of all airline flights with given state
      *
-     * @param flight flight
-     * @return crew random staff
-     * @throws DAOException DAOException
+     * @return list of all flights with given state
      */
-    public Crew buildCrewWithRandomStaff(Flight flight) throws DAOException {
-        logger.trace("Get plane from data base with id: " + flight.getPlane().getID());
-        Plane plane = planeDAO.getPlaneByID(flight.getPlane().getID());
-        int numberOfFlightAttendants = plane.getPassengerCapacity() / 50;
-        logger.trace("Get list of staff with state: " + CurrentState.STANDBY.getState());
-        List<Staff> standbyStaff = staffDAO.getStaffByState(CurrentState.STANDBY);
-        logger.trace("Build crew with random staff");
-        List<Staff> cabinCrew = RandomCrewHandler.getStaffForPlane(standbyStaff, numberOfFlightAttendants);
-        for (Staff staff : cabinCrew) {
-            staffDAO.changeStaffState(staff, CurrentState.SCHEDULED);
-        }
-        Crew crew = new Crew(flight.getId(), cabinCrew);
-        logger.trace("Adds crew to data base");
+    public List<Flight> getFlightsByState(CurrentState state) {
+        return flightDAO.getFlightsByState(state);
+    }
+
+    /**
+     * Gets from data base and returns list of all airline staff
+     *
+     * @return list of all flights with given state
+     */
+    public List<Staff> getAllStaff(Profession profession) {
+        return staffDAO.getStaffByProfession(profession);
+    }
+
+    /**
+     * Adds given staff to airline staff data base
+     *
+     * @param staff staff
+     */
+    public void hireStaff(Staff staff) {
+        staffDAO.hireStaff(staff);
+    }
+
+    /**
+     * Build crew from given staff's and submit it to given flight
+     *
+     * @param cabinStaff cabinStaff
+     * @param flightCode flightCode
+     */
+    public void submitCrewForFlight(List<Staff> cabinStaff, String flightCode) {
+        Flight flight = getFlightByCode(flightCode);
+        Crew crew = new Crew(flight.getId(), cabinStaff);
         crewDAO.addCrew(crew);
-        return crew;
+        for (Staff tempStaff : crew.getCabinStaff()) {
+            staffDAO.changeStaffState(tempStaff, CurrentState.SCHEDULED);
+        }
+        flightDAO.changeFlightState(flight, CurrentState.SCHEDULED);
+    }
+
+    /**
+     * Gets from data base and returns airline staff with given full name
+     *
+     * @param fullName fullName
+     * @return staff
+     */
+    public Staff getStaffByFullName(String fullName) {
+        return staffDAO.getStaffByFullName(fullName);
+    }
+
+    /**
+     * Gets from data base and returns airline flight with given flight code
+     *
+     * @param flightCode flightCode
+     * @return flight
+     */
+    private Flight getFlightByCode(String flightCode) {
+        return flightDAO.getIFlightByCode(flightCode);
     }
 }

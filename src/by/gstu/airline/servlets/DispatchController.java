@@ -1,12 +1,13 @@
 package by.gstu.airline.servlets;
 
-import by.gstu.airline.dao.*;
 import by.gstu.airline.entity.*;
-import by.gstu.airline.exception.DAOException;
-import org.apache.log4j.Logger;
+import by.gstu.airline.entity.services.Dispatcher;
+import by.gstu.airline.entity.services.DispatcherService;
+import by.gstu.airline.entity.services.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,78 +21,103 @@ import java.util.List;
 @WebServlet("/DispatchController")
 public class DispatchController extends HttpServlet {
 
-    private static Logger logger = Logger.getLogger(DispatchController.class.getName());
-
     public DispatchController() {
         super();
     }
 
-    private FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
-    private FlightDAO flightDAO = factoryDAO.getFlightDAO();
-    private StaffDAO staffDAO = factoryDAO.getStaffDAO();
-    private CrewDAO crewDAO = factoryDAO.getCrewDAO();
+    private Dispatcher dispatcher;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (request.getAttribute("user") != null) {
+            showDispatcherPage(request, response);
+        } else {
+            executeDispatcherCommand(request, response);
+            System.out.println("hey");
+        }
+    }
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    /**
+     * Create object of airline dispatcher and forward to dispatcher page
+     *
+     * @param request  request
+     * @param response response
+     * @throws IOException      IOException
+     * @throws ServletException ServletException
+     */
+    private void showDispatcherPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        RequestDispatcher requestDispatcher;
+        dispatcher = new Dispatcher((User) request.getAttribute("user"), new DispatcherService());
+        requestDispatcher = request.getRequestDispatcher("/dispatcher.html");
+        requestDispatcher.forward(request, response);
+    }
+
+    private void executeDispatcherCommand(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        JSONObject json = getJSONObject(request);
+        String action = json.getString("action");
+        switch (action) {
+            case ("addStaff"):
+                Staff staff = initializeStaff(json);
+                dispatcher.hireStaff(staff);
+                showStaffs(response, staff.getProfession());
+                break;
+            case ("submitCrew"):
+                dispatcher.submitCrewForFlight(getStaffs(json.getJSONArray("crew")), json.getString("flightCode"));
+                showFlights(response);
+                break;
+            case ("showStaffs"):
+                Profession profession = Profession.getProfessionByID(json.getInt("profession"));
+                showStaffs(response, profession);
+                break;
+            case ("showNoCrewFlights"):
+                showFlightsWithoutCrew(response);
+                break;
+            case ("init"):
+                initUser(response);
+                break;
+            default:
+                showFlights(response);
+                break;
+        }
+    }
+
+    private List<Staff> getStaffs(JSONArray crewArray) {
+        List<Staff> cabinStaff = new ArrayList<>();
+        for (int i = 0; i < crewArray.length(); i++) {
+            cabinStaff.add(dispatcher.getStaffByFullName(crewArray.getJSONObject(i).getString("staff")));
+        }
+        return cabinStaff;
+    }
+
+    private void showStaffs(HttpServletResponse response, Profession profession) throws IOException {
+        sendArrayResponse(new JSONArray(dispatcher.getAllStaff(profession)), response);
+    }
+
+    private void showFlightsWithoutCrew(HttpServletResponse response) throws IOException {
+        JSONArray array = new JSONArray(dispatcher.getFlightsByState(CurrentState.STANDBY));
+        response.setContentType("application/json");
+        response.getWriter().write(array.toString());
+    }
+
+    /**
+     * Reurns JSONObject received from request
+     *
+     * @param request request
+     * @return JSONObject
+     * @throws IOException IOException
+     */
+    private JSONObject getJSONObject(HttpServletRequest request) throws IOException {
         StringBuilder builder = new StringBuilder();
         String line;
         BufferedReader reader = request.getReader();
         while ((line = reader.readLine()) != null) {
             builder.append(line);
         }
-
-        JSONObject jsonObject = new JSONObject(builder.toString());
-        String action = jsonObject.getString("action");
-
-        String flightCode;
-        CurrentState state;
-        Profession profession;
-
-        switch (action) {
-            case ("showAllFlights"):
-                showFlights(response);
-                break;
-            case ("showNoCrewFlights"):
-                showFlightsWithoutCrew(response);
-                break;
-            case ("showStaffs"):
-                profession = Profession.getProfessionByID(jsonObject.getInt("profession"));
-                showStaffsByProfession(response, profession);
-                break;
-            case ("addStaff"):
-                Staff staff = initializeStaff(jsonObject);
-                try {
-                    staffDAO.hireStaff(staff);
-                } catch (DAOException e) {
-                    logger.error("Cannot add staff to data base", e);
-                }
-                break;
-            case ("submitCrew"):
-                List<Staff> cabinStaff = new ArrayList<>();
-                JSONArray crewArray = jsonObject.getJSONArray("crew");
-                try {
-                    Flight flight = flightDAO.getIFlightByCode(jsonObject.getString("flightCode"));
-                    for (int i = 0; i < crewArray.length(); i++) {
-                        cabinStaff.add(staffDAO.getStaffByFullName(crewArray.getJSONObject(i).getString("staff")));
-                    }
-                    Crew crew = new Crew(flight.getId(), cabinStaff);
-                    crewDAO.addCrew(crew);
-                    for (Staff tempStaff : crew.getCabinStaff()) {
-                        staffDAO.changeStaffState(tempStaff, CurrentState.SCHEDULED);
-                    }
-                    flightDAO.changeFlightState(flight, CurrentState.SCHEDULED);
-                } catch (DAOException e) {
-                    logger.error("Cannot submit crew for flight", e);
-                }
-                break;
-            default:
-                break;
-
-        }
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        return new JSONObject(builder.toString());
     }
 
     /**
@@ -101,63 +127,39 @@ public class DispatchController extends HttpServlet {
      * @throws IOException IOException
      */
     private void showFlights(HttpServletResponse response) throws IOException {
-        try {
-            List<Flight> flightList = flightDAO.getFlightsList();
-            JSONArray array = new JSONArray(flightList);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            logger.error("Cannot get list of flights from data base", e);
-        }
+        sendArrayResponse(new JSONArray(dispatcher.getAllFlights()), response);
     }
 
     /**
-     * Getting from data base list of airline flights without crew (standby flights)
+     * Sends JSONArray in response
      *
+     * @param array    JSONArray
      * @param response response
      * @throws IOException IOException
      */
-    private void showFlightsWithoutCrew(HttpServletResponse response) throws IOException {
-        try {
-            List<Flight> flightList = flightDAO.getFlightsByState(CurrentState.STANDBY);
-            JSONArray array = new JSONArray(flightList);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            logger.error("Cannot get list of flights without crew from data base", e);
-        }
-    }
-
-    /**
-     * Getting from data base list of airline staff with given profession and sending it in servlet response
-     *
-     * @param response   response
-     * @param profession profession
-     * @throws IOException
-     */
-    private void showStaffsByProfession(HttpServletResponse response, Profession profession) throws IOException {
-        try {
-            List<Staff> staffs = factoryDAO.getStaffDAO().getStaffByProfession(profession);
-            JSONArray array = new JSONArray(staffs);
-            response.setContentType("application/json");
-            response.getWriter().write(array.toString());
-        } catch (DAOException e) {
-            logger.error("Cannot get list of staffs with given profession from data base", e);
-        }
+    private void sendArrayResponse(JSONArray array, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.getWriter().write(array.toString());
     }
 
     /**
      * Returns staff initialized by data from request
+     *
      * @param jsonObject jsonObject
      * @return staff
      */
     private Staff initializeStaff(JSONObject jsonObject) {
-        Staff staff;
         String firstName = jsonObject.getString("firstName");
         String lastName = jsonObject.getString("lastName");
         int professionID = jsonObject.getInt("professionID");
         Profession profession = Profession.getProfessionByID(professionID);
-        staff = new Staff(firstName, lastName, profession);
-        return staff;
+        return new Staff(firstName, lastName, profession);
+    }
+
+    private void initUser(HttpServletResponse response) throws IOException {
+        JSONObject responseData = new JSONObject();
+        responseData.put("dispatcher", dispatcher.getUser().getLogin());
+        response.setContentType("application/json");
+        response.getWriter().write(responseData.toString());
     }
 }
