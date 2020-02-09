@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 public class ConfigurationManager {
 
-        private ResourceBundle bundle = ResourceBundle.getBundle("db_configuration");
+    private ResourceBundle bundle = ResourceBundle.getBundle("db_configuration");
 
     public final String DRIVER= bundle.getString("DRIVER");
     public final String DATA_BASE = bundle.getString("DATA_BASE");

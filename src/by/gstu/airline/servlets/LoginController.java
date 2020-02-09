@@ -2,14 +2,14 @@ package by.gstu.airline.servlets;
 
 import by.gstu.airline.dao.FactoryDAO;
 import by.gstu.airline.dao.UserDAO;
-import by.gstu.airline.dao.mysql.MySqlCrewDAO;
-import by.gstu.airline.entity.services.Access;
-import by.gstu.airline.entity.services.User;
+import by.gstu.airline.services.Access;
+import by.gstu.airline.services.Commands;
+import by.gstu.airline.services.Pages;
+import by.gstu.airline.services.User;
 import by.gstu.airline.exception.DAOException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,8 +27,9 @@ public class LoginController extends HttpServlet {
         super();
     }
 
+    private String path;
     private User user;
-    private String path = "/index.html";
+
     private FactoryDAO factoryDAO = FactoryDAO.getFactoryDAO();
     private UserDAO userDAO = factoryDAO.getUserDAO();
 
@@ -53,14 +54,15 @@ public class LoginController extends HttpServlet {
         if (user != null && user.getPassword().equals(password)) {
             request.setAttribute("user", user);
             if (user.getAccess().equals(Access.ADMINISTRATOR)) {
-                path = "/AdminController";
+                path = Pages.ADMINISTRATOR_CONTROLLER;
             } else if (user.getAccess().equals(Access.DISPATCHER)) {
-                path = "/DispatchController";
+                path = Pages.DISPATCHER_CONTROLLER;
             }
             requestDispatcher = request.getRequestDispatcher(path);
             requestDispatcher.forward(request, response);
         } else {
-            out.write("<p id='welc' style='color: red; font-size: larger;'>You are not an authorised user! Please check with administrator!</p>");
+            path = Pages.LOGIN_PAGE;
+            out.write(Commands.ERROR_TEXT);
             requestDispatcher = request.getRequestDispatcher(path);
             requestDispatcher.include(request, response);
         }

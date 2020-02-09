@@ -1,4 +1,4 @@
-package by.gstu.airline.entity.services;
+package by.gstu.airline.services;
 
 public class User {
 

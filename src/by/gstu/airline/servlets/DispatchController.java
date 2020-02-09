@@ -1,9 +1,9 @@
 package by.gstu.airline.servlets;
 
-import by.gstu.airline.entity.*;
-import by.gstu.airline.entity.services.Dispatcher;
-import by.gstu.airline.entity.services.DispatcherService;
-import by.gstu.airline.entity.services.User;
+import by.gstu.airline.entity.CurrentState;
+import by.gstu.airline.entity.Profession;
+import by.gstu.airline.entity.Staff;
+import by.gstu.airline.services.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,7 +32,6 @@ public class DispatchController extends HttpServlet {
             showDispatcherPage(request, response);
         } else {
             executeDispatcherCommand(request, response);
-            System.out.println("hey");
         }
     }
 
@@ -51,32 +50,40 @@ public class DispatchController extends HttpServlet {
     private void showDispatcherPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher requestDispatcher;
         dispatcher = new Dispatcher((User) request.getAttribute("user"), new DispatcherService());
-        requestDispatcher = request.getRequestDispatcher("/dispatcher.html");
+        requestDispatcher = request.getRequestDispatcher(Pages.DISPATCHER_PAGE);
         requestDispatcher.forward(request, response);
     }
 
+    /**
+     * Method delegates executing commands and sending appropriate response
+     * according with received action
+     *
+     * @param request  request
+     * @param response response
+     * @throws IOException IOException
+     */
     private void executeDispatcherCommand(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JSONObject json = getJSONObject(request);
         String action = json.getString("action");
         switch (action) {
-            case ("addStaff"):
+            case (Commands.ADD_STAFF):
                 Staff staff = initializeStaff(json);
                 dispatcher.hireStaff(staff);
                 showStaffs(response, staff.getProfession());
                 break;
-            case ("submitCrew"):
+            case (Commands.SUBMIT_CREW):
                 dispatcher.submitCrewForFlight(getStaffs(json.getJSONArray("crew")), json.getString("flightCode"));
                 showFlights(response);
                 break;
-            case ("showStaffs"):
+            case (Commands.SHOW_STAFFS):
                 Profession profession = Profession.getProfessionByID(json.getInt("profession"));
                 showStaffs(response, profession);
                 break;
-            case ("showNoCrewFlights"):
+            case (Commands.SHOW_NO_CREW_FLIGHTS):
                 showFlightsWithoutCrew(response);
                 break;
-            case ("init"):
+            case (Commands.INITIALIZE):
                 initUser(response);
                 break;
             default:
@@ -85,6 +92,12 @@ public class DispatchController extends HttpServlet {
         }
     }
 
+    /**
+     * Returns list of staff by its full names received from JSONArray
+     *
+     * @param crewArray crewArray
+     * @return list of staffs
+     */
     private List<Staff> getStaffs(JSONArray crewArray) {
         List<Staff> cabinStaff = new ArrayList<>();
         for (int i = 0; i < crewArray.length(); i++) {
@@ -93,10 +106,23 @@ public class DispatchController extends HttpServlet {
         return cabinStaff;
     }
 
+    /**
+     * Sends in response JSONArray filled with staffs with given profession
+     *
+     * @param response   response
+     * @param profession profession
+     * @throws IOException IOException
+     */
     private void showStaffs(HttpServletResponse response, Profession profession) throws IOException {
         sendArrayResponse(new JSONArray(dispatcher.getAllStaff(profession)), response);
     }
 
+    /**
+     * Sends in response JSONArray filled with flights without crew
+     *
+     * @param response response
+     * @throws IOException IOException
+     */
     private void showFlightsWithoutCrew(HttpServletResponse response) throws IOException {
         JSONArray array = new JSONArray(dispatcher.getFlightsByState(CurrentState.STANDBY));
         response.setContentType("application/json");
@@ -104,7 +130,7 @@ public class DispatchController extends HttpServlet {
     }
 
     /**
-     * Reurns JSONObject received from request
+     * Returns JSONObject received from request
      *
      * @param request request
      * @return JSONObject

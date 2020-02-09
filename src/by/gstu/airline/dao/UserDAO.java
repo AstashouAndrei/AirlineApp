@@ -1,7 +1,7 @@
 package by.gstu.airline.dao;
 
-import by.gstu.airline.entity.services.Access;
-import by.gstu.airline.entity.services.User;
+import by.gstu.airline.services.Access;
+import by.gstu.airline.services.User;
 import by.gstu.airline.exception.DAOException;
 
 import java.util.List;

@@ -4,9 +4,7 @@ import by.gstu.airline.entity.CurrentState;
 import by.gstu.airline.entity.Flight;
 import by.gstu.airline.entity.Itinerary;
 import by.gstu.airline.entity.Plane;
-import by.gstu.airline.entity.services.Administrator;
-import by.gstu.airline.entity.services.AdministratorService;
-import by.gstu.airline.entity.services.User;
+import by.gstu.airline.services.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,12 +49,13 @@ public class AdminController extends HttpServlet {
     private void showAdministratorPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher requestDispatcher;
         administrator = new Administrator((User) request.getAttribute("user"), new AdministratorService());
-        requestDispatcher = request.getRequestDispatcher("/admin.html");
+        requestDispatcher = request.getRequestDispatcher(Pages.ADMINISTRATOR_PAGE);
         requestDispatcher.forward(request, response);
     }
 
     /**
-     * Handles request according by action and sends corresponding response
+     * Method delegates executing commands and sending appropriate response
+     * according with received action
      *
      * @param request  request
      * @param response response
@@ -68,40 +67,40 @@ public class AdminController extends HttpServlet {
         String action = json.getString("action");
 
         switch (action) {
-            case ("addFlight"):
+            case (Commands.ADD_FLIGHT):
                 administrator.addFlight(initializeFlight(json));
                 showFlights(response);
                 break;
-            case ("removeFlight"):
+            case (Commands.REMOVE_FLIGHT):
                 administrator.removeFlight(json.getString("flightCode"));
                 showFlights(response);
                 break;
-            case ("startFlight"):
+            case (Commands.START_FLIGHT):
                 administrator.startFlight(json.getString("flightCode"));
                 showFlightsExceptState(response, CurrentState.STANDBY);
                 break;
-            case ("finishFlight"):
+            case (Commands.FINISH_FLIGHT):
                 administrator.finishFlight(json.getString("flightCode"));
                 showFlightsExceptState(response, CurrentState.STANDBY);
                 break;
-            case ("delayFlight"):
+            case (Commands.DELAY_FLIGHT):
                 administrator.delayFlight(json.getString("flightCode"));
                 showFlightsExceptState(response, CurrentState.STANDBY);
                 break;
-            case ("cancelFlight"):
+            case (Commands.CANCEL_FLIGHT):
                 administrator.cancelFlight(json.getString("flightCode"));
                 showFlightsExceptState(response, CurrentState.STANDBY);
                 break;
-            case ("showFlightByID"):
+            case (Commands.SHOW_FLIGHT_BY_ID):
                 showFlightByID(json.getInt("flightID"), response);
                 break;
-            case ("showManageble"):
+            case (Commands.SHOW_MANAGEABLE_FLIGHTS):
                 showFlightsExceptState(response, CurrentState.getStateByDescription(json.getString("state")));
                 break;
-            case ("showRemovable"):
+            case (Commands.SHOW_REMOVABLE_FLIGHTS):
                 showFlightsByState(response, CurrentState.getStateByDescription(json.getString("state")));
                 break;
-            case ("init"):
+            case (Commands.INITIALIZE):
                 initUser(response);
                 break;
             default:

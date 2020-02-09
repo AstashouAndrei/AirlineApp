@@ -1,8 +1,7 @@
-package by.gstu.airline.entity.services;
+package by.gstu.airline.services;
 
 import by.gstu.airline.entity.CurrentState;
 import by.gstu.airline.entity.Flight;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 

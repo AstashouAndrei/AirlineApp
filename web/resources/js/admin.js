@@ -12,7 +12,7 @@ let cancelFlightCancelBtn = document.getElementById("cancelFlight");
 let flightCodeInp = document.getElementById("f-code");
 let departureInp = document.getElementById("dep");
 let arrivalInp = document.getElementById("arr");
-let planeTypelInp = document.getElementById("pl-type");
+let planeTypelnp = document.getElementById("pl-type");
 let passengerCapacityInp = document.getElementById("pas-cap");
 let flightRangeInp = document.getElementById("fl-range");
 let fuelConsumptionInp = document.getElementById("f-cons");
@@ -25,6 +25,11 @@ let operatingPanel = document.getElementById("mng-panel");
 
 let administratorLogin = document.getElementById('admin-inf');
 
+let flightCodeRegX = /^RW \d{3,4}$/;
+let cityRegX = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
+let planeTyperRegX = /^([A-Za-z]+[ ]?|[A-Za-z0-9]?['-]?)+$/;
+let passengerCapacityRegX = /[1-3]\d\d/;
+
 let action;
 let state;
 
@@ -32,7 +37,7 @@ let table = document.getElementById('flight-table'),
     rIndex;
 
 function init() {
-    action = 'init';
+    action = 'INITIALIZE';
     let requestData = {
         action: action
     };
@@ -43,7 +48,7 @@ showFlightByIdBtn.addEventListener('click', function () {
     operatingPanel.style.display = "none";
     removeFlightBtn.style.visibility = "hidden";
     let flightIDValue = flightID.value.trim();
-    action = 'showFlightByID';
+    action = 'SHOW_FLIGHT_BY_ID';
     let requestData = {
         flightID: flightIDValue,
         action: action
@@ -54,7 +59,7 @@ showFlightByIdBtn.addEventListener('click', function () {
 showAllFlightsBtn.addEventListener('click', function () {
     operatingPanel.style.display = "none";
     removeFlightBtn.style.visibility = "hidden";
-    action = 'showAllFlights';
+    action = 'SHOW_ALL_FLIGHTS';
     let requestData = {
         action: action
     };
@@ -64,24 +69,35 @@ showAllFlightsBtn.addEventListener('click', function () {
 addFlightBtn.addEventListener('click', function () {
     operatingPanel.style.display = "none";
     removeFlightBtn.style.visibility = "hidden";
-    action = 'addFlight';
-    let requestData = {
-        flightCode: flightCodeInp.value,
-        departure: departureInp.value,
-        arrival: arrivalInp.value,
-        planeType: planeTypelInp.value,
-        passengerCapacity: passengerCapacityInp.value,
-        flightRange: flightRangeInp.value,
-        fuelConsumption: fuelConsumptionInp.value,
-        action: action
-    };
-    callServlet(requestData, action);
+    action = 'ADD_FLIGHT';
+
+    let flightCode = flightCodeInp.value;
+    let departure = departureInp.value;
+    let arrival = arrivalInp.value;
+    let planeType = planeTypelnp.value;
+    let passengerCapacity = passengerCapacityInp.value;
+    let flightRange = flightRangeInp.value;
+    let fuelConsumption = fuelConsumptionInp.value;
+
+    if (isFlightValid(flightCode, departure, arrival, planeType, passengerCapacity, flightRange, fuelConsumption)) {
+        let requestData = {
+            flightCode: flightCode,
+            departure: departureInp.value,
+            arrival: arrivalInp.value,
+            planeType: planeTypelnp.value,
+            passengerCapacity: passengerCapacityInp.value,
+            flightRange: flightRangeInp.value,
+            fuelConsumption: fuelConsumptionInp.value,
+            action: action
+        };
+        callServlet(requestData, action);
+    }
 });
 
 showManagebleFlightsBtn.addEventListener('click', function () {
     operatingPanel.style.display = "block";
     removeFlightBtn.style.visibility = "hidden";
-    action = 'showManageble';
+    action = 'SHOW_MANAGEABLE_FLIGHTS';
     state = 'Standby';
     let requestData = {
         state: state,
@@ -93,7 +109,7 @@ showManagebleFlightsBtn.addEventListener('click', function () {
 showRemovableFlightsBtn.addEventListener('click', function () {
     removeFlightBtn.style.visibility = "visible";
     operatingPanel.style.display = "none";
-    action = 'showRemovable';
+    action = 'SHOW_REMOVABLE_FLIGHTS';
     state = 'Standby';
     let requestData = {
         state: state,
@@ -104,7 +120,7 @@ showRemovableFlightsBtn.addEventListener('click', function () {
 
 removeFlightBtn.addEventListener('click', function () {
     operatingPanel.style.display = "none";
-    action = 'removeFlight';
+    action = 'REMOVE_FLIGHT';
     let requestData = {
         flightCode: flightCodeInp.value,
         action: action
@@ -113,7 +129,7 @@ removeFlightBtn.addEventListener('click', function () {
 });
 
 startFlightBtn.addEventListener('click', function () {
-    action = 'startFlight';
+    action = 'START_FLIGHT';
     let requestData = {
         flightCode: flightCodeInp.value,
         action: action
@@ -122,7 +138,7 @@ startFlightBtn.addEventListener('click', function () {
 });
 
 finishFlightBtn.addEventListener('click', function () {
-    action = 'finishFlight';
+    action = 'FINISH_FLIGHT';
     let requestData = {
         flightCode: flightCodeInp.value,
         action: action
@@ -131,7 +147,7 @@ finishFlightBtn.addEventListener('click', function () {
 });
 
 delayFlightBtn.addEventListener('click', function () {
-    action = 'delayFlight';
+    action = 'DELAY_FLIGHT';
     let requestData = {
         flightCode: flightCodeInp.value,
         action: action
@@ -140,7 +156,7 @@ delayFlightBtn.addEventListener('click', function () {
 });
 
 cancelFlightCancelBtn.addEventListener('click', function () {
-    action = 'cancelFlight';
+    action = 'CANCEL_FLIGHT';
     let requestData = {
         flightCode: flightCodeInp.value,
         action: action
@@ -166,7 +182,7 @@ function makeTableActive(table) {
             flightCodeInp.value = this.cells[1].innerHTML;
             departureInp.value = this.cells[2].innerHTML;
             arrivalInp.value = this.cells[3].innerHTML;
-            planeTypelInp.value = this.cells[4].innerHTML;
+            planeTypelnp.value = this.cells[4].innerHTML;
             passengerCapacityInp.value = this.cells[5].innerHTML;
             flightRangeInp.value = this.cells[6].innerHTML;
             fuelConsumptionInp.value = this.cells[7].innerHTML;
@@ -193,10 +209,10 @@ function showResult(data, action) {
         table.deleteRow(i);
     }
     switch (action) {
-        case 'showFlightByID':
+        case 'SHOW_FLIGHT_BY_ID':
             showFlight(data);
             break;
-        case 'init':
+        case 'INITIALIZE':
             initUser(data);
             break;
         default:
@@ -237,4 +253,87 @@ function showFlight(data) {
     row.insertCell(6).appendChild(document.createTextNode(data.plane.flightRange));
     row.insertCell(7).appendChild(document.createTextNode(data.plane.fuelConsumption));
     row.insertCell(8).appendChild(document.createTextNode(data.state));
+}
+
+function isFlightValid(code, departure, arrival, plane, capacity, range, fuel) {
+    let isCodeValid = isFlightCodeValid(code, flightCodeInp);
+    let isDepartureValid = isCitiesValid(departure, departureInp);
+    let isArrivalValid = isCitiesValid(arrival, arrivalInp);
+    let isTypeValid = isPlaneTypeValid(plane, planeTypelnp);
+    let isCapacityValid = isPlaneCapacityValid(capacity, passengerCapacityInp);
+    let isFuelConsValid = isRangeValid(fuel, 3000, 8000, fuelConsumptionInp);
+    let isFlightRangeValid = isRangeValid(range, 6000, 15000, flightRangeInp);
+    return (isCodeValid && isDepartureValid && isArrivalValid && isTypeValid &&
+        isCapacityValid && isFuelConsValid && isFlightRangeValid);
+}
+
+function isRangeValid(range, min, max, form) {
+    let isValid = false;
+    if (range === '' || !isInRange(range, min, max)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+function isFlightCodeValid(code, form) {
+    let isValid = false;
+    if (code === '' || !flightCodeRegX.test(code)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+function isCitiesValid(city, form) {
+    let isValid = false;
+    if (city === '' || !cityRegX.test(city)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+function isPlaneTypeValid(type, form) {
+    let isValid = false;
+    if (type === '' || !planeTyperRegX.test(type)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+function isPlaneCapacityValid(capacity, form) {
+    let isValid = false;
+    if (capacity === '' || !passengerCapacityRegX.test(capacity)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+
+function showError(inputForm) {
+    let formControl = inputForm.parentElement;
+    formControl.className = 'form-group error';
+}
+
+function showSuccess(inputForm) {
+    let formControl = inputForm.parentElement;
+    formControl.className = 'form-group success';
+}
+
+function isInRange(value, min, max) {
+    let parserValue = parseInt(value);
+    return parserValue > min && parserValue < max;
 }

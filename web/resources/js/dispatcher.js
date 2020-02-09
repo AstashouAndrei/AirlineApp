@@ -37,24 +37,39 @@ let attendant2 = document.getElementById("crewAttendant2");
 let attendant3 = document.getElementById("crewAttendant3");
 let attendant4 = document.getElementById("crewAttendant4");
 
+let nameRegX = /^([A-Za-z]+[ ]?|[A-Za-z]+['-]?)+$/;
+
 let submitCrewBtn = document.getElementById("submitCrew");
 let clearCrewBtn = document.getElementById("clearCrew");
 
 let dispatcherLogin = document.getElementById('dispatcher-inf');
 
 let action;
-let staffProfessionID;
 let state;
 
 function init() {
-    action = 'init';
+    action = 'INITIALIZE';
     let requestData = {
         action: action
     };
     callServlet(requestData, action);
 }
 
-showAllFlightsBtn.addEventListener('click', function () {
+function callServlet(data, action) {
+    let request = new XMLHttpRequest();
+    request.open("POST", 'DispatchController', true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.responseType = 'json';
+    request.send(JSON.stringify(data));
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            let respData = request.response;
+            showResult(respData, action);
+        }
+    };
+}
+
+function showAllFlights() {
     prepareCrewBtn.style.visibility = "hidden";
     flightInfo.style.display = "block";
     crewInfo.style.display = "none";
@@ -64,82 +79,70 @@ showAllFlightsBtn.addEventListener('click', function () {
     let requestData = {
         action: action
     };
-    callServlet(requestData);
+    callServlet(requestData, action);
+}
+
+showAllFlightsBtn.addEventListener('click', function () {
+    showAllFlights();
 });
 
 showNoCrewBtn.addEventListener('click', function () {
+    clearInputs();
     prepareCrewBtn.style.visibility = "visible";
     flightInfo.style.display = "block";
     currentFlight.style.display = "block";
     crewInfo.style.display = "none";
     crewManagePanel.style.display = "none";
     state = 'Standby';
-    action = 'showNoCrewFlights';
+    action = 'SHOW_NO_CREW_FLIGHTS';
     let requestData = {
         action: action,
         state: state
     };
-    callServlet(requestData);
+    callServlet(requestData, action);
 });
 
 prepareCrewBtn.addEventListener('click', function () {
+    clearCrewInputs("form-control crewInp");
+    clearCrewInputs("form-control crewInp");
     flightInfo.style.display = "none";
     crewInfo.style.display = "block";
     crewManagePanel.style.display = "block";
 });
 
-showCaptainsBtn.addEventListener('click', function () {
-    action = 'showStaffs';
-    staffProfessionID = 1;
+function showStaff(id) {
+    action = 'SHOW_STAFFS';
     let requestData = {
         action: action,
-        profession: staffProfessionID
+        profession: id
     };
     callServlet(requestData, action);
+}
+
+showCaptainsBtn.addEventListener('click', function () {
+    showStaff(1);
 });
 
 showOfficersBtn.addEventListener('click', function () {
-    action = 'showStaffs';
-    staffProfessionID = 2;
-    let requestData = {
-        action: action,
-        profession: staffProfessionID
-    };
-    callServlet(requestData, action);
+    showStaff(2);
 });
 
 showNavigatorsBtn.addEventListener('click', function () {
-    action = 'showStaffs';
-    staffProfessionID = 3;
-    let requestData = {
-        action: action,
-        profession: staffProfessionID
-    };
-    callServlet(requestData, action);
+    showStaff(3);
 });
 
 showRadiomansBtn.addEventListener('click', function () {
-    action = 'showStaffs';
-    staffProfessionID = 4;
-    let requestData = {
-        action: action,
-        profession: staffProfessionID
-    };
-    callServlet(requestData, action);
+    showStaff(4);
 });
 
 showFlightAttendantsBtn.addEventListener('click', function () {
-    action = 'showStaffs';
-    staffProfessionID = 5;
-    let requestData = {
-        action: action,
-        profession: staffProfessionID
-    };
-    callServlet(requestData, action);
+    showStaff(5);
 });
 
 addStaffBtn.addEventListener('click', function () {
-    action = 'addStaff';
+    action = 'ADD_STAFF';
+    let staffFirstName = staffFirstNameInp.value;
+    let staffLastName = staffLastNameInp.value;
     let proffessionID;
     for (let i = 0; i < staffProfession.length; i++) {
         if (staffProfession[i].checked) {
@@ -147,42 +150,52 @@ addStaffBtn.addEventListener('click', function () {
             break;
         }
     }
-    let requestData = {
-        action: action,
-        firstName: staffFirstNameInp.value,
-        lastName: staffLastNameInp.value,
-        professionID: proffessionID
-    };
-    callServlet(requestData);
+    if (validateStaff(staffFirstName, staffLastName)) {
+        let requestData = {
+            action: action,
+            firstName: staffFirstName,
+            lastName: staffLastName,
+            professionID: proffessionID
+        };
+        callServlet(requestData, action);
+    }
 });
 
 submitCrewBtn.addEventListener('click', function () {
-    action = 'submitCrew';
-    let crew = [{
-        staff: captain.value
-    },
-        {
-            staff: officer.value
+    action = 'SUBMIT_CREW';
+    let captainName = captain.value;
+    let officerName = officer.value;
+    let navigatorName = navigator.value;
+    let radiomanName = radioman.value;
+    let attendantName = attendant1.value;
+    if (validateCrew(captainName, officerName, navigatorName, radiomanName, attendantName)) {
+        let crew = [{
+            staff: captainName
         },
-        {
-            staff: navigator.value
-        },
-        {
-            staff: radioman.value
-        },
-        {
-            staff: attendant1.value
-        }
-        // {staff: attendant2.value},
-        // {staff: attendant3.value},
-        // {staff: attendant4.value}
-    ]
-    let requestData = {
-        action: action,
-        flightCode: resultFlightCode.textContent,
-        crew: crew
-    };
-    callServlet(requestData);
+            {
+                staff: officerName
+            },
+            {
+                staff: navigatorName
+            },
+            {
+                staff: radiomanName
+            },
+            {
+                staff: attendantName
+            }
+            // {staff: attendant2.value},
+            // {staff: attendant3.value},
+            // {staff: attendant4.value}
+        ]
+        let requestData = {
+            action: action,
+            flightCode: resultFlightCode.textContent,
+            crew: crew
+        };
+        callServlet(requestData, action);
+    }
+
 });
 
 function activeFlightTable() {
@@ -224,14 +237,14 @@ function activeStaffTable(staff) {
 }
 
 clearCrewBtn.addEventListener('click', function () {
-    clearInputs("form-control crewInp");
+    clearCrewInputs("form-control crewInp");
 });
 
 addStaffClearBtn.addEventListener('click', function () {
-    clearInputs("form-control inputbox");
+    clearCrewInputs("form-control inputbox");
 });
 
-function clearInputs(className) {
+function clearCrewInputs(className) {
     let elements = [];
     elements = document.getElementsByClassName(className);
     for (let i = 0; i < elements.length; i++) {
@@ -239,31 +252,25 @@ function clearInputs(className) {
     }
 }
 
-function callServlet(data, action) {
-    let request = new XMLHttpRequest();
-    request.open("POST", 'DispatchController', true);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.responseType = 'json';
-    request.send(JSON.stringify(data));
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            let respData = request.response;
-            showResult(respData, action);
-        }
-    };
-}
-
 function showResult(data, action) {
-    switch (action) {
-        case 'showStaffs':
-            showStaffs(data);
-            break;
-        case 'init':
-            initUser(data);
-            break;
-        default:
-            showFlights(data);
-            break;
+    if (action) {
+        switch (action) {
+            case 'ADD_STAFF':
+                showStaffs(data);
+                break;
+            case 'SHOW_STAFFS':
+                showStaffs(data);
+                break;
+            case 'INITIALIZE':
+                initUser(data);
+                break;
+            case 'SUBMIT_CREW':
+                showAllFlights();
+                break;
+            default:
+                showFlights(data, action);
+                break;
+        }
     }
 }
 
@@ -286,7 +293,9 @@ function showFlights(data) {
         row.insertCell(4).appendChild(document.createTextNode(data[i].plane.planeType));
         row.insertCell(5).appendChild(document.createTextNode(toTitleCase(data[i].state)));
     }
-    activeFlightTable();
+    if (action === 'SHOW_NO_CREW_FLIGHTS') {
+        activeFlightTable();
+    }
 }
 
 function showStaffs(data) {
@@ -313,4 +322,48 @@ function toTitleCase(str) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
+}
+
+function clearInputs() {
+    resultFlightCode.textContent = "";
+    resultPlane.textContent = "";
+    resultDeparture.textContent = "";
+    resultArrival.textContent = "";
+}
+
+function validateCrew(captainName, officerName, navigatorName, radiomanName, attendantName) {
+    let isCapValid = validateName(captainName, captain);
+    let isOffValid = validateName(officerName, officer);
+    let isNavValid = validateName(navigatorName, navigator);
+    let isRadValid = validateName(radiomanName, radioman);
+    let isFaNameValid = validateName(attendantName, attendant1);
+    return (isCapValid && isOffValid && isNavValid && isRadValid && isFaNameValid);
+}
+
+function validateStaff(firstName, lastName) {
+    let isFirstNameValid = validateName(firstName, staffFirstNameInp);
+    let isLastNameValid = validateName(lastName, staffLastNameInp);
+    return (isFirstNameValid && isLastNameValid);
+}
+
+
+function validateName(name, form) {
+    let isValid = false;
+    if (name === '' || !nameRegX.test(name)) {
+        showError(form);
+    } else {
+        showSuccess(form);
+        isValid = true;
+    }
+    return isValid;
+}
+
+function showError(inputForm) {
+    let formControl = inputForm.parentElement;
+    formControl.className = 'form-group error';
+}
+
+function showSuccess(inputForm) {
+    let formControl = inputForm.parentElement;
+    formControl.className = 'form-group success';
 }

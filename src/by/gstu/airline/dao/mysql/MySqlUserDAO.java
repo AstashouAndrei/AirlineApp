@@ -1,8 +1,8 @@
 package by.gstu.airline.dao.mysql;
 
 import by.gstu.airline.dao.UserDAO;
-import by.gstu.airline.entity.services.Access;
-import by.gstu.airline.entity.services.User;
+import by.gstu.airline.services.Access;
+import by.gstu.airline.services.User;
 import by.gstu.airline.exception.DAOException;
 import by.gstu.airline.sql.SqlCommands;
 import by.gstu.airline.sql.SqlConnection;
