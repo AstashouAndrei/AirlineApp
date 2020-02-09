@@ -126,6 +126,7 @@ removeFlightBtn.addEventListener('click', function () {
         action: action
     };
     callServlet(requestData, action);
+    removeFlightBtn.style.visibility = "hidden  ";
 });
 
 startFlightBtn.addEventListener('click', function () {

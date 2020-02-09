@@ -3,8 +3,8 @@ package by.gstu.airline.dao.mysql;
 import by.gstu.airline.entity.*;
 import by.gstu.airline.dao.CrewDAO;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -18,6 +18,8 @@ public class MySqlCrewDAO implements CrewDAO {
 
     private static Logger logger = Logger.getLogger(MySqlCrewDAO.class.getName());
 
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
+
     /**
      * Method adds given Crew to data base
      *
@@ -30,7 +32,7 @@ public class MySqlCrewDAO implements CrewDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_CREW"));
             for (Staff staff : crew.getCabinStaff()) {
@@ -42,8 +44,8 @@ public class MySqlCrewDAO implements CrewDAO {
             logger.error("Cannot add crew to data base", e);
             throw new DAOException("Cannot add crew to data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -63,7 +65,7 @@ public class MySqlCrewDAO implements CrewDAO {
         Crew crew;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_CREW_BY_FLIGHT_ID"));
             statement.setInt(1, flightID);
@@ -82,9 +84,9 @@ public class MySqlCrewDAO implements CrewDAO {
             throw new DAOException("Cannot get crew from data base", e);
         } finally {
             {
-                SqlConnection.close(resultSet);
-                SqlConnection.close(statement);
-                SqlConnection.close(connection);
+                connectionPool.close(resultSet);
+                connectionPool.close(statement);
+                connectionPool.releaseConnection(connection);
             }
         }
         return crew;
@@ -102,7 +104,7 @@ public class MySqlCrewDAO implements CrewDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_CREW_BY_FLIGHT_ID"));
             statement.setInt(1, flightID);
@@ -111,8 +113,8 @@ public class MySqlCrewDAO implements CrewDAO {
             logger.error("Cannot remove crew from data base", e);
             throw new DAOException("Cannot remove crew from data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 }

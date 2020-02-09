@@ -4,8 +4,8 @@ import by.gstu.airline.dao.UserDAO;
 import by.gstu.airline.services.Access;
 import by.gstu.airline.services.User;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -18,6 +18,8 @@ import java.util.List;
 public class MySqlUserDAO implements UserDAO {
 
     private static Logger logger = Logger.getLogger(MySqlUserDAO.class.getName());
+
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
 
     /**
      * Method adds given user to data base
@@ -32,7 +34,7 @@ public class MySqlUserDAO implements UserDAO {
         ResultSet resultSet = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_USER"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -50,9 +52,9 @@ public class MySqlUserDAO implements UserDAO {
             logger.error("Cannot add user to data base", e);
             throw new DAOException("Cannot add user to data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -70,7 +72,7 @@ public class MySqlUserDAO implements UserDAO {
         User user;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_USER_BY_ID"));
             statement.setInt(1, id);
@@ -84,9 +86,9 @@ public class MySqlUserDAO implements UserDAO {
             logger.error("Cannot get user by id from data base", e);
             throw new DAOException("Cannot get user by id from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return user;
     }
@@ -106,7 +108,7 @@ public class MySqlUserDAO implements UserDAO {
         User user;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_USER_BY_LOGIN"));
             statement.setString(1, login);
@@ -120,9 +122,9 @@ public class MySqlUserDAO implements UserDAO {
             logger.error("Cannot get user by login from data base", e);
             throw new DAOException("Cannot get user by login from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return user;
     }
@@ -142,7 +144,7 @@ public class MySqlUserDAO implements UserDAO {
         List<User> users = new ArrayList<User>();
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_USERS_BY_ACCESS"));
             statement.setInt(1, access.getAccessID());
@@ -156,9 +158,9 @@ public class MySqlUserDAO implements UserDAO {
             logger.error("Cannot get list of users by access from data base", e);
             throw new DAOException("Cannot get list of users by access from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return users;
     }
@@ -175,7 +177,7 @@ public class MySqlUserDAO implements UserDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_USER_BY_ID"));
             statement.setInt(1, id);
@@ -184,8 +186,8 @@ public class MySqlUserDAO implements UserDAO {
             logger.error("Cannot remove user from data base", e);
             throw new DAOException("Cannot remove user from data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 

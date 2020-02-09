@@ -3,8 +3,8 @@ package by.gstu.airline.dao.mysql;
 import by.gstu.airline.dao.ItineraryDAO;
 import by.gstu.airline.entity.Itinerary;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -15,6 +15,8 @@ import java.sql.*;
 public class MySqlItineraryDAO implements ItineraryDAO {
 
     private static Logger logger = Logger.getLogger(MySqlItineraryDAO.class.getName());
+
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
 
     /**
      * Method adds given itinerary to data base
@@ -29,7 +31,7 @@ public class MySqlItineraryDAO implements ItineraryDAO {
         ResultSet resultSet = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_ITINERARY"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -45,9 +47,9 @@ public class MySqlItineraryDAO implements ItineraryDAO {
             logger.error("Cannot add itinerary to data base", e);
             throw new DAOException("Cannot add itinerary to data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -66,7 +68,7 @@ public class MySqlItineraryDAO implements ItineraryDAO {
         Itinerary itinerary = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_ITINERARY_BY_ID"));
             statement.setInt(1, id);
@@ -82,9 +84,9 @@ public class MySqlItineraryDAO implements ItineraryDAO {
             logger.error("Cannot get itinerary from data base", e);
             throw new DAOException("Cannot get itinerary from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return itinerary;
     }
@@ -102,7 +104,7 @@ public class MySqlItineraryDAO implements ItineraryDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("CHANGE_FLIGHT_CODE"));
             statement.setString(1, flightCode);
@@ -112,8 +114,8 @@ public class MySqlItineraryDAO implements ItineraryDAO {
             logger.error("Cannot change itinerary flight code in data base", e);
             throw new DAOException("Cannot change itinerary flight code in data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -129,7 +131,7 @@ public class MySqlItineraryDAO implements ItineraryDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_ITINERARY_BY_ID"));
             statement.setInt(1, id);
@@ -138,8 +140,8 @@ public class MySqlItineraryDAO implements ItineraryDAO {
             logger.error("Cannot remove itinerary from data base", e);
             throw new DAOException("Cannot remove itinerary from data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 }

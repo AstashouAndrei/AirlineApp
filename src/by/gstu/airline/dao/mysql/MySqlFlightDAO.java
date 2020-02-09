@@ -6,8 +6,8 @@ import by.gstu.airline.entity.Flight;
 import by.gstu.airline.entity.Itinerary;
 import by.gstu.airline.entity.Plane;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -20,6 +20,8 @@ import java.util.List;
 public class MySqlFlightDAO implements FlightDAO {
 
     private static Logger logger = Logger.getLogger(MySqlFlightDAO.class.getName());
+
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
 
     private MySqlItineraryDAO itineraryDAO = new MySqlItineraryDAO();
     private MySqlPlaneDAO planeDAO = new MySqlPlaneDAO();
@@ -37,7 +39,7 @@ public class MySqlFlightDAO implements FlightDAO {
         ResultSet resultSet = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_FLIGHT"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -53,9 +55,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot add flight to data base", e);
             throw new DAOException("Cannot add flight to data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -74,7 +76,7 @@ public class MySqlFlightDAO implements FlightDAO {
         Flight flight;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_FLIGHT_BY_ID"));
             statement.setInt(1, id);
@@ -86,9 +88,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot get flight from data base", e);
             throw new DAOException("Cannot get flight from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return flight;
     }
@@ -108,7 +110,7 @@ public class MySqlFlightDAO implements FlightDAO {
         Flight flight;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_FLIGHT_BY_CODE"));
             statement.setString(1, flightCode);
@@ -120,9 +122,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot get flight from data base", e);
             throw new DAOException("Cannot get flight from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return flight;
     }
@@ -142,7 +144,7 @@ public class MySqlFlightDAO implements FlightDAO {
         Flight flight = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_FLIGHTS_LIST"));
             logger.trace("Create result set");
@@ -155,9 +157,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot get list of staffs from data base", e);
             throw new DAOException("Cannot get list of staffs from data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return flightsList;
     }
@@ -178,7 +180,7 @@ public class MySqlFlightDAO implements FlightDAO {
         Flight flight = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_FLIGHTS_EXCEPT_STATE"));
             statement.setString(1, state.getState());
@@ -191,9 +193,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot get list of staffs from data base with given state", e);
             throw new DAOException("Cannot get list of staffs from data base with given state", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return flightsList;
     }
@@ -214,7 +216,7 @@ public class MySqlFlightDAO implements FlightDAO {
         Flight flight = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_FLIGHTS_BY_STATE"));
             statement.setString(1, state.getState());
@@ -227,9 +229,9 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot get list of staffs from data base with given state", e);
             throw new DAOException("Cannot get list of staffs from data base with given state", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return flightsList;
     }
@@ -248,7 +250,7 @@ public class MySqlFlightDAO implements FlightDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("CHANGE_FLIGHT_DATA"));
             statement.setInt(1, plane.getID());
@@ -259,8 +261,8 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot change flight data in data base", e);
             throw new DAOException("Cannot change flight data in data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -277,7 +279,7 @@ public class MySqlFlightDAO implements FlightDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("CHANGE_FLIGHT_STATE"));
             statement.setString(1, state.getState());
@@ -287,8 +289,8 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot change flight state in data base", e);
             throw new DAOException("Cannot change flight state in data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -304,7 +306,7 @@ public class MySqlFlightDAO implements FlightDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_FLIGHT_BY_CODE"));
             statement.setString(1, flightCode);
@@ -313,8 +315,8 @@ public class MySqlFlightDAO implements FlightDAO {
             logger.error("Cannot remove flight from data base", e);
             throw new DAOException("Cannot remove flight from data base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 

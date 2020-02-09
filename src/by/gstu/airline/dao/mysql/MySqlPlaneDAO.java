@@ -3,8 +3,8 @@ package by.gstu.airline.dao.mysql;
 import by.gstu.airline.dao.PlaneDAO;
 import by.gstu.airline.entity.Plane;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -16,6 +16,8 @@ import java.sql.*;
 public class MySqlPlaneDAO implements PlaneDAO {
 
     private static Logger logger = Logger.getLogger(MySqlPlaneDAO.class.getName());
+
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
 
     /**
      * Adds given planes to data base
@@ -30,7 +32,7 @@ public class MySqlPlaneDAO implements PlaneDAO {
         ResultSet resultSet = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_PLANE"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -47,9 +49,9 @@ public class MySqlPlaneDAO implements PlaneDAO {
             logger.error("Cannot add plane to data base", e);
             throw new DAOException("Cannot add plane to data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -68,7 +70,7 @@ public class MySqlPlaneDAO implements PlaneDAO {
         Plane plane;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
 //            statement = connection.prepareStatement(GET_PLANE_BY_ID);
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_PLANE_BY_ID"));
@@ -86,9 +88,9 @@ public class MySqlPlaneDAO implements PlaneDAO {
             logger.error("Cannot get plane from data base by given id", e);
             throw new DAOException("Cannot get plane from data base by given id", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return plane;
     }
@@ -106,7 +108,7 @@ public class MySqlPlaneDAO implements PlaneDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("CHANGE_PLANE_CAPACITY"));
             statement.setInt(1, passengerCapacity);
@@ -116,8 +118,8 @@ public class MySqlPlaneDAO implements PlaneDAO {
             logger.error("Cannot change given plane passenger capacity", e);
             throw new DAOException("Cannot change given plane passenger capacity", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -133,7 +135,7 @@ public class MySqlPlaneDAO implements PlaneDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_PLANE_BY_ID"));
             statement.setInt(1, id);
@@ -142,8 +144,8 @@ public class MySqlPlaneDAO implements PlaneDAO {
             logger.error("Cannot remove plane from data base by given id", e);
             throw new DAOException("Cannot remove plane from data base by given id", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 }

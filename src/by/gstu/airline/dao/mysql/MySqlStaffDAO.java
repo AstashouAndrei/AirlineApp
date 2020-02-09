@@ -5,8 +5,8 @@ import by.gstu.airline.dao.StaffDAO;
 import by.gstu.airline.entity.Staff;
 import by.gstu.airline.entity.Profession;
 import by.gstu.airline.exception.DAOException;
+import by.gstu.airline.sql.ConnectionPool;
 import by.gstu.airline.sql.SqlCommands;
-import by.gstu.airline.sql.SqlConnection;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -21,6 +21,8 @@ public class MySqlStaffDAO implements StaffDAO {
 
     private static Logger logger = Logger.getLogger(MySqlStaffDAO.class.getName());
 
+    private ConnectionPool connectionPool = ConnectionPool.createConnectionPool();
+
     /**
      * Adds given staff to data base
      *
@@ -34,14 +36,13 @@ public class MySqlStaffDAO implements StaffDAO {
         ResultSet resultSet = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("ADD_STAFF"),
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, staff.getFirstName());
             statement.setString(2, staff.getLastName());
             statement.setInt(3, staff.getProfession().getProfessionID());
-//            statement.setString(4, CurrentState.STANDBY.getState());
             statement.executeUpdate();
             logger.trace("Create result set");
             resultSet = statement.getGeneratedKeys();
@@ -51,9 +52,9 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot add staff to data base", e);
             throw new DAOException("Cannot add staff to data base", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -72,7 +73,7 @@ public class MySqlStaffDAO implements StaffDAO {
         Staff staff;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_STAFF_BY_ID"));
             statement.setInt(1, id);
@@ -84,9 +85,9 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot get staff from data base by given id", e);
             throw new DAOException("Cannot get staff from data base by given id", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return staff;
     }
@@ -106,7 +107,7 @@ public class MySqlStaffDAO implements StaffDAO {
         Staff staff;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_STAFF_BY_FULL_NAME"));
             statement.setString(1, fullName);
@@ -118,9 +119,9 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot get staff from data base by given full name", e);
             throw new DAOException("Cannot get staff from data base by given full name", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return staff;
     }
@@ -140,7 +141,7 @@ public class MySqlStaffDAO implements StaffDAO {
         List<Staff> staffList = new ArrayList<Staff>();
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_STAFFS_BY_STATE"));
             statement.setString(1, state.getState());
@@ -154,9 +155,9 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot get list of staffs from data base with given state", e);
             throw new DAOException("Cannot get list of staffs from data base with given state", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return staffList;
     }
@@ -176,7 +177,7 @@ public class MySqlStaffDAO implements StaffDAO {
         List<Staff> staffList = new ArrayList<Staff>();
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_STANDBY_STAFFS_BY_PROFESSION"));
             statement.setInt(1, profession.getProfessionID());
@@ -190,9 +191,9 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot get list of staffs from data base with given profession", e);
             throw new DAOException("Cannot get list of staffs from data base with given profession", e);
         } finally {
-            SqlConnection.close(resultSet);
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(resultSet);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
         return staffList;
     }
@@ -210,7 +211,7 @@ public class MySqlStaffDAO implements StaffDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("CHANGE_STAFF_STATE"));
             statement.setString(1, state.getState());
@@ -220,8 +221,8 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot change staff state into given one", e);
             throw new DAOException("Cannot change staff state into given one", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -237,7 +238,7 @@ public class MySqlStaffDAO implements StaffDAO {
         PreparedStatement statement = null;
         try {
             logger.trace("Open connection");
-            connection = SqlConnection.createConnection();
+            connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
             statement = connection.prepareStatement(SqlCommands.getCommand("REMOVE_STAFF_BY_ID"));
             statement.setInt(1, id);
@@ -246,8 +247,8 @@ public class MySqlStaffDAO implements StaffDAO {
             logger.error("Cannot remove staff from date base", e);
             throw new DAOException("Cannot remove staff from date base", e);
         } finally {
-            SqlConnection.close(statement);
-            SqlConnection.close(connection);
+            connectionPool.close(statement);
+            connectionPool.releaseConnection(connection);
         }
     }
 
