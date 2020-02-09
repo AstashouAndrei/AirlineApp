@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class with description of connecting method using connection pool
+ */
 public class ConnectionPool {
 
     private static Logger logger = Logger.getLogger(ConnectionPool.class.getName());
@@ -22,21 +25,31 @@ public class ConnectionPool {
 
     }
 
+    /**
+     * Returns connection taking from available connections list, remove its from this list
+     * and adds it into the using connection list
+     *
+     * @return connection
+     * @throws SQLException SQLException
+     */
     public Connection getConnection() throws SQLException {
-
         if (availableConnections.isEmpty()) {
             availableConnections.add(createConnection());
         }
-
         Connection connection = availableConnections.remove(availableConnections.size() - 1);
         usingConnections.add(connection);
         return connection;
     }
 
+    /**
+     * Returns an instance of connection pull with a specified size of available connections.
+     * Creates new connection pull if its not exist, returns existing instance otherwise
+     *
+     * @return instance of connection pool
+     */
     public static ConnectionPool createConnectionPool() {
         if (connectionPool == null) {
             connectionPool = new ConnectionPool();
-
             for (int i = 0; i < connectionPoolSize; i++) {
                 connectionPool.availableConnections.add(createConnection());
             }
@@ -44,6 +57,12 @@ public class ConnectionPool {
         return connectionPool;
     }
 
+    /**
+     * Removes given connection from list of using connections and adds it
+     * into the available connections list
+     *
+     * @param connection connection
+     */
     public void releaseConnection(Connection connection) {
         if (connection != null) {
             if (usingConnections.remove(connection)) {
@@ -117,5 +136,4 @@ public class ConnectionPool {
             }
         }
     }
-
 }
