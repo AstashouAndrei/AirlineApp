@@ -1,5 +1,9 @@
 package by.gstu.airline.services;
 
+/**
+ * Class with description entity of user objects
+ */
+
 public class User {
 
     private int id;

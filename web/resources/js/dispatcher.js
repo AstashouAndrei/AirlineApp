@@ -167,8 +167,12 @@ submitCrewBtn.addEventListener('click', function () {
     let officerName = officer.value;
     let navigatorName = navigator.value;
     let radiomanName = radioman.value;
-    let attendantName = attendant1.value;
-    if (validateCrew(captainName, officerName, navigatorName, radiomanName, attendantName)) {
+    let firstAttendantName = attendant1.value;
+    let secondAttendantName = attendant2.value;
+    let thirdAttendantName = attendant3.value;
+    let forthAttendantName = attendant4.value;
+    if (validateCrew(captainName, officerName, navigatorName, radiomanName,
+        firstAttendantName, secondAttendantName, thirdAttendantName, forthAttendantName)) {
         let crew = [{
             staff: captainName
         },
@@ -182,11 +186,17 @@ submitCrewBtn.addEventListener('click', function () {
                 staff: radiomanName
             },
             {
-                staff: attendantName
+                staff:  firstAttendantName
+            },
+            {
+                staff: secondAttendantName
+            },
+            {
+                staff: thirdAttendantName
+            },
+            {
+                staff: forthAttendantName
             }
-            // {staff: attendant2.value},
-            // {staff: attendant3.value},
-            // {staff: attendant4.value}
         ]
         let requestData = {
             action: action,
@@ -226,7 +236,14 @@ function activeStaffTable(staff) {
                     radioman.value = this.cells[1].innerHTML + " " + this.cells[2].innerHTML;
                     break;
                 case 'ATTENDANT':
-                    attendant1.value = this.cells[1].innerHTML + " " + this.cells[2].innerHTML;
+                    let x = i;
+                    attendant1.value = staffTable.rows[x].cells[1].innerHTML + " " + staffTable.rows[x].cells[2].innerHTML;
+                    x++;
+                    attendant2.value = staffTable.rows[x].cells[1].innerHTML + " " + staffTable.rows[x].cells[2].innerHTML;
+                    x++;
+                    attendant3.value = staffTable.rows[x].cells[1].innerHTML + " " + staffTable.rows[x].cells[2].innerHTML;
+                    x++;
+                    attendant4.value = staffTable.rows[x].cells[1].innerHTML + " " + staffTable.rows[x].cells[2].innerHTML;
                     break;
                 default:
                     showFlights(data);
@@ -331,13 +348,18 @@ function clearInputs() {
     resultArrival.textContent = "";
 }
 
-function validateCrew(captainName, officerName, navigatorName, radiomanName, attendantName) {
+function validateCrew(captainName, officerName, navigatorName, radiomanName,
+                      flightAttendant1, flightAttendant2, flightAttendant3, flightAttendant4) {
     let isCapValid = validateName(captainName, captain);
     let isOffValid = validateName(officerName, officer);
     let isNavValid = validateName(navigatorName, navigator);
     let isRadValid = validateName(radiomanName, radioman);
-    let isFaNameValid = validateName(attendantName, attendant1);
-    return (isCapValid && isOffValid && isNavValid && isRadValid && isFaNameValid);
+    let isFirstAttValid = validateName(flightAttendant1, attendant1);
+    let isSecondAttValid = validateName(flightAttendant2, attendant2);
+    let isThirdAttValidt = validateName(flightAttendant3, attendant3);
+    let isForthAttValid = validateName(flightAttendant4, attendant4);
+    return (isCapValid && isOffValid && isNavValid && isRadValid && isFirstAttValid
+    && isSecondAttValid && isThirdAttValidt && isForthAttValid);
 }
 
 function validateStaff(firstName, lastName) {

@@ -113,6 +113,7 @@ public class AdministratorService {
         if (CurrentState.SCHEDULED.equals(flightDAO.getIFlightByCode(flightCode).getState())
                 || CurrentState.DELAYED.equals(flightDAO.getIFlightByCode(flightCode).getState())) {
             manageFlight(flightDAO.getIFlightByCode(flightCode), CurrentState.STANDBY);
+            crewDAO.removeCrewByFlightID(flightDAO.getIFlightByCode(flightCode).getId());
         }
     }
 
@@ -129,5 +130,4 @@ public class AdministratorService {
             staffDAO.changeStaffState(staff, state);
         }
     }
-
 }

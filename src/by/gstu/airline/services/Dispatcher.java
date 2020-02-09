@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Class with description entity and actions of dispatcher object
  */
+
 public class Dispatcher {
 
     private final User user;
