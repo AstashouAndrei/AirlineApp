@@ -3,7 +3,7 @@ CREATE SCHEMA `airline` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
 USE airline;
 CREATE TABLE `access` (
   `id` int(11) NOT NULL,
-  `Access` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `Access` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Access_UNIQUE` (`Access`),
   UNIQUE KEY `AccessID_UNIQUE` (`id`)
@@ -12,16 +12,14 @@ CREATE TABLE `access` (
 	INSERT airline.access(id, Access) 
 VALUES
 (1, 'Administrator'),
-(2, 'Dispatcher'),
-(3, 'Staff');
-
+(2, 'Dispatcher');
 
 
 USE airline;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `Login` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `Password` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `Login` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `Password` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `AccessID` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -29,21 +27,21 @@ CREATE TABLE `user` (
   UNIQUE KEY `Login_UNIQUE` (`Login`),
   KEY `AccessID_idx` (`AccessID`),
   CONSTRAINT `AccessID` FOREIGN KEY (`AccessID`) REFERENCES `access` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-	INSERT airline.user(Login, Password, AccessID) 
+	INSERT airline.user(Login, Password, Email, AccessID) 
 VALUES
-('Robert', 'RobertAdm', 1),
-('Sean', 'SeanAdm', 2),
-('Ronald', 'RonaldDisp', 2),
-('Steave', 'SteaveDisp', 2);
+('Somerset', 'Aset', 'somer@gmail.com', 1),
+('Wilson', 'w1on', 'netrick@google.com', 2),
+('Андрей', 'ан87', 'onaps@rambler.ru', 1),
+('Наталья', 'nata', 'natka@rmailr.ru', 2);
 
 
 
 USE airline;
 CREATE TABLE `professions` (
   `id` int(11) NOT NULL,
-  `Profession` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `Profession` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `profession` (`Profession`),
   UNIQUE KEY `ProfessionID_UNIQUE` (`id`)
@@ -62,14 +60,14 @@ USE airline;
 
 CREATE TABLE `staff` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `FirstName` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `LastName` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
+  `FirstName` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `LastName` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ProfessionID` int(11) NOT NULL,
-  `CurrentState` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `CurrentState` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Standby',
   UNIQUE KEY `idnew_table_UNIQUE` (`id`),
   KEY `ProfessionID` (`ProfessionID`),
-  CONSTRAINT `ProfessionID` FOREIGN KEY (`ProfessionID`) REFERENCES `professions` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `ProfessionID` FOREIGN KEY (`ProfessionID`) REFERENCES `professions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
  
 INSERT airline.staff(FirstName, LastName, ProfessionID, CurrentState) 
 VALUES
@@ -159,17 +157,17 @@ VALUES
 ('Welch', 'Foster', 5, 'Standby'),
 ('Brittney', 'Clarke', 5, 'Standby');
 
+
 USE airline;
 
 CREATE TABLE `planes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `Model` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `PassengerCapacity` int(11) NOT NULL,
-  `FlightRange` int(11) NOT NULL,
-  `FuelConsumption` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `PlaneID_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `Model` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `PassengerCapacity` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `FlightRange` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `FuelConsumption` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
     INSERT airline.planes (Model, PassengerCapacity, FlightRange, FuelConsumption) 
 VALUES
@@ -187,12 +185,12 @@ USE airline;
 
 CREATE TABLE `itinerary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `FlightCode` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `Departure` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `Arrival` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `FlightCode` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `Departure` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `Arrival` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ID_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  UNIQUE KEY `FlightCode_UNIQUE` (`FlightCode`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
   INSERT airline.itinerary(FlightCode, Departure, Arrival) 
 VALUES
@@ -210,15 +208,16 @@ USE airline;
 
 CREATE TABLE `flight` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ItineraryID` int(11) NOT NULL,
-  `PlaneID` int(11) NOT NULL,
+  `ItineraryID` int(11) DEFAULT NULL,
+  `PlaneID` int(11) DEFAULT NULL,
+  `CurrentState` varchar(45) NOT NULL DEFAULT 'Standby',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `FlightID_UNIQUE` (`id`),
-  KEY `ItineraryID_idx` (`ItineraryID`),
-  KEY `PlaneID_idx` (`PlaneID`),
-  CONSTRAINT `ItineraryID` FOREIGN KEY (`ItineraryID`) REFERENCES `itinerary` (`id`),
-  CONSTRAINT `PlaneID` FOREIGN KEY (`PlaneID`) REFERENCES `planes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `itin_idx` (`ItineraryID`),
+  KEY `plan_idx` (`PlaneID`),
+  CONSTRAINT `itin` FOREIGN KEY (`ItineraryID`) REFERENCES `itinerary` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `plan` FOREIGN KEY (`PlaneID`) REFERENCES `planes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 
 insert airline.flight (ItineraryID, PlaneID)
 values
@@ -237,11 +236,11 @@ CREATE TABLE `crew` (
   `FlightID` int(11) NOT NULL,
   `StaffID` int(11) NOT NULL,
   UNIQUE KEY `ID_UNIQUE` (`id`),
-  KEY `StaffID_idx` (`StaffID`),
-  KEY `FlightID_idx` (`FlightID`),
-  CONSTRAINT `FlightID` FOREIGN KEY (`FlightID`) REFERENCES `flight` (`id`),
-  CONSTRAINT `StaffID` FOREIGN KEY (`StaffID`) REFERENCES `staff` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `flightID_idx` (`FlightID`),
+  KEY `staffID_idx` (`StaffID`),
+  CONSTRAINT `flightID` FOREIGN KEY (`FlightID`) REFERENCES `flight` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `staffID` FOREIGN KEY (`StaffID`) REFERENCES `staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

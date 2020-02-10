@@ -2,23 +2,21 @@ package main.java.by.gstu.airline.web.servlets;
 
 import main.java.by.gstu.airline.dao.FactoryDAO;
 import main.java.by.gstu.airline.dao.UserDAO;
+import main.java.by.gstu.airline.entity.User;
+import main.java.by.gstu.airline.exception.DAOException;
 import main.java.by.gstu.airline.services.Access;
 import main.java.by.gstu.airline.services.Commands;
 import main.java.by.gstu.airline.web.Pages;
-import main.java.by.gstu.airline.entity.User;
-import main.java.by.gstu.airline.exception.DAOException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/login")
 public class LoginController extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(LoginController.class.getName());
@@ -72,4 +70,3 @@ public class LoginController extends HttpServlet {
         doPost(request, response);
     }
 }
-

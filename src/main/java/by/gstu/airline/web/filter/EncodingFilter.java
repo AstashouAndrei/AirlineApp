@@ -1,34 +1,33 @@
 package main.java.by.gstu.airline.web.filter;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = { "/*" },
-initParams = {@WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param")})
+/**
+ * Filter for encoding incoming data to UTF-8 format
+ */
+
 public class EncodingFilter implements Filter {
+
     private String code;
 
-    public void init(FilterConfig config) throws ServletException {
-        code = config.getInitParameter("encoding");
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        code = filterConfig.getInitParameter("encoding");
     }
 
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        String codeRequest = req.getCharacterEncoding();
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        String codeRequest = servletRequest.getCharacterEncoding();
         if (code != null && !code.equalsIgnoreCase(codeRequest)) {
-            req.setCharacterEncoding(code);
-            resp.setCharacterEncoding(code);
-            chain.doFilter(req, resp);
+            servletRequest.setCharacterEncoding(code);
+            servletResponse.setCharacterEncoding(code);
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 
+    @Override
     public void destroy() {
-       code = null;
+        code = null;
     }
-
-
-
-
-
 }

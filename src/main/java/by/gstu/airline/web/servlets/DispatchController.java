@@ -4,14 +4,15 @@ import main.java.by.gstu.airline.entity.CurrentState;
 import main.java.by.gstu.airline.entity.Profession;
 import main.java.by.gstu.airline.entity.Staff;
 import main.java.by.gstu.airline.entity.User;
-import main.java.by.gstu.airline.services.*;
+import main.java.by.gstu.airline.services.Commands;
+import main.java.by.gstu.airline.services.Dispatcher;
+import main.java.by.gstu.airline.services.DispatcherService;
 import main.java.by.gstu.airline.web.Pages;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/DispatchController")
+/**
+ * Controller for handling Dispatcher actions
+ */
+
 public class DispatchController extends HttpServlet {
 
     public DispatchController() {

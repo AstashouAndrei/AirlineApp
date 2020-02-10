@@ -1,23 +1,26 @@
 package main.java.by.gstu.airline.web.servlets;
 
 import main.java.by.gstu.airline.entity.*;
-import main.java.by.gstu.airline.services.*;
+import main.java.by.gstu.airline.services.Administrator;
+import main.java.by.gstu.airline.services.AdministratorService;
+import main.java.by.gstu.airline.services.Commands;
 import main.java.by.gstu.airline.web.Pages;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet("/AdminController")
-public class AdminController extends HttpServlet {
+/**
+ * Controller for handling Administrator actions
+ */
 
+public class AdminController extends HttpServlet {
     private Administrator administrator;
 
     public AdminController() {
@@ -211,5 +214,4 @@ public class AdminController extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().write(responseData.toString());
     }
-
 }

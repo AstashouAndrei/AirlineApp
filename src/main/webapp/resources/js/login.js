@@ -1,7 +1,7 @@
 let logUserName = document.getElementById('login-username');
 let logUserPass = document.getElementById('login-password');
 
-let passwordRegX = /^([a-zA-Z0-9]{3,10})$/;
+let passwordRegX = /^([а-яА-Яa-zA-Z0-9]{3,10})$/;
 
 function isAllValid() {
     let logUserNameValue = logUserName.value.trim();
@@ -14,7 +14,6 @@ function validateLog(login, password) {
     let isPasswordValid = validatePassword(password, logUserPass);
     return (isLoginValid && isPasswordValid);
 }
-
 
 function validateLogin(login, form) {
     let isValid = false;
