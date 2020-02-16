@@ -72,7 +72,6 @@ public class MySqlPlaneDAO implements PlaneDAO {
             logger.trace("Open connection");
             connection = connectionPool.getConnection();
             logger.trace("Create prepared statement");
-//            statement = connection.prepareStatement(GET_PLANE_BY_ID);
             statement = connection.prepareStatement(SqlCommands.getCommand("GET_PLANE_BY_ID"));
             statement.setInt(1, id);
             logger.trace("Create result set");

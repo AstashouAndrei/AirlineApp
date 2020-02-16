@@ -7,9 +7,16 @@ import java.util.ResourceBundle;
  */
 public class SqlCommands {
 
-   private static final ResourceBundle resBundle = ResourceBundle.getBundle("db_commands");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("db_commands");
 
+    /**
+     * Gets from db_commands file an sql command according with given String command
+     * and returns it as a string
+     *
+     * @param command command
+     * @return sql command
+     */
     public static String getCommand(String command) {
-        return resBundle.getString(command);
+        return resourceBundle.getString(command);
     }
 }

@@ -35,6 +35,17 @@ public class LoginController extends HttpServlet {
         handleRequest(request, response);
     }
 
+    /**
+     * Handlies request from login page. Sends a response with an error if
+     * there is no in data base user with entered login and password or password is incorrect.
+     * Otherwise, sets an attribute with a user from data base and forwards request
+     * into the appropriate servlet according with a user access
+     *
+     * @param request  request
+     * @param response response
+     * @throws IOException      IOException
+     * @throws ServletException ServletException
+     */
     private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
 

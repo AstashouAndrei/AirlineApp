@@ -6,7 +6,7 @@ import main.java.by.gstu.airline.entity.*;
 import java.util.List;
 
 /**
- * Class with dispatcher methods description
+ * Class with dispatcher methods logic
  */
 
 public class DispatcherService {

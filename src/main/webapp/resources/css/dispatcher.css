@@ -45,6 +45,7 @@ body {
 }
 
 #dispatcher, #dispatcher-inf {
+    margin-left: 10px;
     font-size: 20px;
     color: #CE2B3A;
     float: right;
@@ -57,7 +58,6 @@ body {
 .operation-pannel {
     padding-left: 30px;
     padding-bottom: 15px;
-    
 }
 
 .flight-id-input {

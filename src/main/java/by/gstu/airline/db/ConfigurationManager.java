@@ -22,6 +22,12 @@ public class ConfigurationManager {
     private ConfigurationManager() {
     }
 
+    /**
+     * Returns an instance of ConfigurationManager.
+     * Creates new ConfigurationManager if its not exist, returns existing instance otherwise
+     *
+     * @return instance of connection pool
+     */
     public static ConfigurationManager getInstance() {
         if (instance == null) {
             return instance = new ConfigurationManager();

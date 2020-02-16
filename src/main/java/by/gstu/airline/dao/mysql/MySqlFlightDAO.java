@@ -320,7 +320,6 @@ public class MySqlFlightDAO implements FlightDAO {
         }
     }
 
-
     /**
      * Returns flight initialized by data from result set
      *

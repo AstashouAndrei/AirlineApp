@@ -7,7 +7,7 @@ import main.java.by.gstu.airline.exception.DAOException;
 import java.util.List;
 
 /**
- * Class with administrator methods description
+ * Class with administrator methods logic
  */
 public class AdministratorService {
 

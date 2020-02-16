@@ -76,7 +76,6 @@ public class Staff {
     public String toString() {
         return profession.getProfession() + ": " + firstName + " " + lastName;
     }
-
 }
 
 

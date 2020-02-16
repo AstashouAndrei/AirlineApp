@@ -56,6 +56,7 @@ body {
 }
 
 #admin, #admin-inf {
+    margin-left: 10px;
     font-size: 20px;
     color: #CE2B3A;
     float: right;
