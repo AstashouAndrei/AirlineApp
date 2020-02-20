@@ -55,7 +55,7 @@ body {
     padding-bottom: 15px;
 }
 
-#admin, #admin-inf {
+#admin, #admin-inf, #logout {
     margin-left: 10px;
     font-size: 20px;
     color: #CE2B3A;

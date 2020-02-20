@@ -36,7 +36,7 @@ public class LoginController extends HttpServlet {
     }
 
     /**
-     * Handlies request from login page. Sends a response with an error if
+     * Handles request from login page. Sends a response with an error if
      * there is no in data base user with entered login and password or password is incorrect.
      * Otherwise, sets an attribute with a user from data base and forwards request
      * into the appropriate servlet according with a user access

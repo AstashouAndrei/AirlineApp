@@ -44,7 +44,7 @@ body {
     vertical-align:bottom;
 }
 
-#dispatcher, #dispatcher-inf {
+#dispatcher, #dispatcher-inf, #logout {
     margin-left: 10px;
     font-size: 20px;
     color: #CE2B3A;

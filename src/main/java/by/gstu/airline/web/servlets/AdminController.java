@@ -208,6 +208,12 @@ public class AdminController extends HttpServlet {
         response.getWriter().write(array.toString());
     }
 
+    /**
+     * Sends in response login name of logged user
+     *
+     * @param response response
+     * @throws IOException IOException
+     */
     private void initUser(HttpServletResponse response) throws IOException {
         JSONObject responseData = new JSONObject();
         responseData.put("administrator", administrator.getUser().getLogin());

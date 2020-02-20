@@ -19,26 +19,56 @@ public class Administrator {
         this.administratorService = administratorService;
     }
 
+    /**
+     * Adds flight to data base
+     *
+     * @param flight flight
+     */
     public void addFlight(Flight flight) {
         administratorService.addFlight(flight);
     }
 
+    /**
+     * Removes flight from data base by it's flight code
+     *
+     * @param flightCode flightCode
+     */
     public void removeFlight(String flightCode) {
         administratorService.removeFlight(flightCode);
     }
 
+    /**
+     * Gets from data base and returns list of all airline flights
+     *
+     * @return list of all flights
+     */
     public List<Flight> getAllFlights() {
         return administratorService.getAllFlights();
     }
 
+    /**
+     * Gets from data base and returns flight by given id
+     *
+     * @return flight
+     */
     public Flight getFlightByID(int id) {
         return administratorService.getFlightByID(id);
     }
 
+    /**
+     * Gets from data base and returns list of all airline flights with given state
+     *
+     * @return list of all flights with given state
+     */
     public List<Flight> getFlightsByState(CurrentState state) {
         return administratorService.getFlightsByState(state);
     }
 
+    /**
+     * Gets from data base and returns list of all airline flights except flights with given state
+     *
+     * @return list of all flights except flights with given state
+     */
     public List<Flight> getFlightsExceptState(CurrentState state) {
         return administratorService.getFlightsExceptState(state);
     }

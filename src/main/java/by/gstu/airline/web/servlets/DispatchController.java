@@ -188,6 +188,12 @@ public class DispatchController extends HttpServlet {
         return new Staff(firstName, lastName, profession);
     }
 
+    /**
+     * Sends in response login name of logged user
+     *
+     * @param response response
+     * @throws IOException IOException
+     */
     private void initUser(HttpServletResponse response) throws IOException {
         JSONObject responseData = new JSONObject();
         responseData.put("dispatcher", dispatcher.getUser().getLogin());

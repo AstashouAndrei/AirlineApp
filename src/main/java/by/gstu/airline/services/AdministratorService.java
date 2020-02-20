@@ -18,12 +18,22 @@ public class AdministratorService {
     private final StaffDAO staffDAO = factoryDAO.getStaffDAO();
     private final CrewDAO crewDAO = factoryDAO.getCrewDAO();
 
-    public void addFlight(Flight flight) throws DAOException {
+    /**
+     * Adds flight to data base
+     *
+     * @param flight flight
+     */
+    public void addFlight(Flight flight) {
         planeDAO.addPlane(flight.getPlane());
         itineraryDAO.addItinerary(flight.getItinerary());
         flightDAO.addFlight(flight);
     }
 
+    /**
+     * Removes flight from data base by it's flight code
+     *
+     * @param flightCode flightCode
+     */
     public void removeFlight(String flightCode) {
         flightDAO.removeFlight(flightCode);
     }

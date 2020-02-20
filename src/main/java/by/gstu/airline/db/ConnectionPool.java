@@ -22,7 +22,6 @@ public class ConnectionPool {
     private static int connectionPoolSize = 20;
 
     private ConnectionPool() {
-
     }
 
     /**
