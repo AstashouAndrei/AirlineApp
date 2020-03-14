@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
  */
 public class SqlCommands {
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("db_commands");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("main.resources.db_commands");
 
     /**
      * Gets from db_commands file an sql command according with given String command
